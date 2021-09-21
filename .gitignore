@@ -13,6 +13,10 @@ Content/MCO_Mocap_Basics/*
 !Content/MCO_Mocap_Basics/**/.keep
 Content/StarterContent/*
 !Content/StarterContent/**/.keep
+Content/InfinityBladeIceLands/*
+!Content/InfinityBladeIceLands/**/.keep
+Content/IceCool/*
+!Content/IceCool/**/.keep
 Source/*/*
 !Source/SurvivalGame/*
 !Source/SurvivalGameEditor/*
