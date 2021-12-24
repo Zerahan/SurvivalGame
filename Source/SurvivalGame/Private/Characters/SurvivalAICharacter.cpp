@@ -183,12 +183,12 @@ AActor* ASurvivalAICharacter::GetPerceptionTopPriority(FVector& LastLocation, bo
 						return PerceptionPriorityList[i];
 					}
 					else {
-						return nullptr;
+						//return nullptr;
 					}
 				}
 			}
 		}
-		//return PerceptionPriorityList[0];
+		return PerceptionPriorityList[0];
 	}
 	LastTopPerceptionRef = nullptr;
 	return nullptr;

@@ -26,12 +26,17 @@ ASurvivalCharacter::ASurvivalCharacter()
 
 	UseDistance = 200.f;
 	UseCrouchToggle = true;
+	CanSprint = true;
+	IsSprintHeld = false;
+	IsSprinting = false;
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 
 	GetCapsuleComponent()->InitCapsuleSize(30.f, 96.f);
 	
 	CrouchedEyeHeight = BaseEyeHeight;
+
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 
 	DefaultMoveSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	SprintSpeedMultiplier = 2.f;
@@ -177,6 +182,13 @@ void ASurvivalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction("ScrollDown", IE_Pressed, this, &ASurvivalCharacter::OnScrollDown);
 }
 
+inline bool ASurvivalCharacter::GetCanSprint() const { return CanSprint; }
+
+void ASurvivalCharacter::SetCanSprint(bool NewCanSprint)
+{
+	CanSprint = NewCanSprint;
+}
+
 void ASurvivalCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
@@ -283,13 +295,31 @@ void ASurvivalCharacter::StopCrouching_Implementation()
 
 void ASurvivalCharacter::StartSprint_Implementation()
 {
-	UnCrouch();
-	GetCharacterMovement()->MaxWalkSpeed = DefaultMoveSpeed * SprintSpeedMultiplier;
+	IsSprintHeld = true;
+	TrySprinting();
 }
 
 void ASurvivalCharacter::StopSprinting_Implementation()
 {
-	GetCharacterMovement()->MaxWalkSpeed = DefaultMoveSpeed;
+	IsSprintHeld = false;
+	TrySprinting();
+}
+
+void ASurvivalCharacter::TrySprinting_Implementation()
+{
+	bool NewIsSprinting = CanSprint;
+	if (CanSprint){
+		NewIsSprinting = !(MoveInput.Y < 0) && IsSprintHeld && (MoveInput.Y > 0 || MoveInput.X != 0);
+	}
+	if (IsSprinting != NewIsSprinting) {
+		IsSprinting = NewIsSprinting;
+		if(IsSprinting){
+			UnCrouch();
+			GetCharacterMovement()->MaxWalkSpeed = DefaultMoveSpeed * SprintSpeedMultiplier;
+		}else{
+			GetCharacterMovement()->MaxWalkSpeed = DefaultMoveSpeed;
+		}
+	}
 }
 
 void ASurvivalCharacter::OnScrollUp_Implementation()
@@ -308,15 +338,19 @@ void ASurvivalCharacter::OnScrollDown_Implementation()
 
 void ASurvivalCharacter::MoveForward(float AxisValue)
 {
+	MoveInput.Y = AxisValue;
 	if (AxisValue != 0.f) {
 		AddMovementInput(GetActorForwardVector(), AxisValue);
+		TrySprinting();
 	}
 }
 
 void ASurvivalCharacter::MoveRight(float AxisValue)
 {
+	MoveInput.X = AxisValue;
 	if (AxisValue != 0.f) {
 		AddMovementInput(GetActorRightVector(), AxisValue);
+		TrySprinting();
 	}
 }
 
