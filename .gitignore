@@ -3,7 +3,7 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
-Content/Packages/*
+Content/Packages/*/*
 !Content/Packages/**/.keep
 Source/*/*
 !Source/SurvivalGame/*
