@@ -3,6 +3,8 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
+Content/Packages/*
+!Content/Packages/**/.keep
 Content/AnimStarterPack/*
 !Content/AnimStarterPack/**/.keep
 Content/FirstPerson/*
