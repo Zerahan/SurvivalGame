@@ -19,11 +19,11 @@ ABasicRobotCharacter::ABasicRobotCharacter()
 	IsLookRotating = false;
 	UseLookRotation = false;
 	/*
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh> meshObject_CON(TEXT("/Game/Mannequin/Character/Mesh/SK_Mannequin"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh> meshObject_CON(TEXT("/Game/Packages/Mannequin/Character/Mesh/SK_Mannequin"));
 	if (meshObject_CON.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(meshObject_CON.Object);
 	}
-	const ConstructorHelpers::FObjectFinder<UAnimBlueprint> animationObject_CON(TEXT("/Game/Mannequin/Animations/ThirdPerson_AnimBP"));
+	const ConstructorHelpers::FObjectFinder<UAnimBlueprint> animationObject_CON(TEXT("/Game/Packages/Mannequin/Animations/ThirdPerson_AnimBP"));
 	if (animationObject_CON.Succeeded()) {
 		GetMesh()->SetAnimInstanceClass(animationObject_CON.Object->GeneratedClass);
 	}//*/
@@ -57,11 +57,11 @@ ABasicRobotCharacter::ABasicRobotCharacter()
 	CameraAccentLight->SetAttenuationRadius(50);
 
 	/*
-	const ConstructorHelpers::FObjectFinder<UBlackboardData> blackboardObject_CON(TEXT("/Game/SurvivalGame/Dev/Blueprints/AI/BasicRobot_BB"));
+	const ConstructorHelpers::FObjectFinder<UBlackboardData> blackboardObject_CON(TEXT("/Game/GameCore/Dev/Blueprints/AI/BasicRobot_BB"));
 	if (blackboardObject_CON.Succeeded()) {
 		BlackboardDataRef = blackboardObject_CON.Object;
 	}
-	const ConstructorHelpers::FObjectFinder<UBehaviorTree> behaviorTreeObject_CON(TEXT("/Game/SurvivalGame/Dev/Blueprints/AI/BasicRobot_BT"));
+	const ConstructorHelpers::FObjectFinder<UBehaviorTree> behaviorTreeObject_CON(TEXT("/Game/GameCore/Dev/Blueprints/AI/BasicRobot_BT"));
 	if (behaviorTreeObject_CON.Succeeded()) {
 		BehaviorTreeRef = behaviorTreeObject_CON.Object;
 	}//*/

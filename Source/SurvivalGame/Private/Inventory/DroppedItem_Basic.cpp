@@ -117,7 +117,7 @@ ADroppedItem_Basic::ADroppedItem_Basic()
 	ItemDataDisplayComponent1->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	ItemDataDisplayComponent2->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 
-	ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/SurvivalGame/Dev/UI/InventoryDroppedItemSlot"));
+	ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/GameCore/Dev/UI/InventoryDroppedItemSlot"));
 	if (WidgetClass.Succeeded()) {
 		ItemDataDisplayComponent1->SetWidgetClass(WidgetClass.Class);
 		ItemDataDisplayComponent2->SetWidgetClass(WidgetClass.Class);

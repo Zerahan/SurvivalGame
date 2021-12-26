@@ -25,7 +25,7 @@ ATool_Welder::ATool_Welder()
 
 	// Finding data table objects can cause the editor to crash on load. Probably starts when the table is edited.
 	/*
-	const ConstructorHelpers::FObjectFinder<UCompositeDataTable> findObject(TEXT("CompositeDataTable'/Game/SurvivalGame/Dev/Data/devItemTable.devItemTable'"));//"/Game/SurvivalGame/Dev/Data/devItemTable"));//
+	const ConstructorHelpers::FObjectFinder<UCompositeDataTable> findObject(TEXT("CompositeDataTable'/Game/SurvivalGame/Dev/Data/devItemTable.devItemTable'"));//"/Game/GameCore/Dev/Data/devItemTable"));//
 	if (findObject.Succeeded()) {
 		AmmoData.StaticDataHandle.DataTable = findObject.Object;
 	}

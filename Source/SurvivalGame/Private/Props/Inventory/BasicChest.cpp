@@ -17,7 +17,7 @@ ABasicChest::ABasicChest()
 	InventoryManager->SetInventorySize(4);
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	const ConstructorHelpers::FObjectFinder<UStaticMesh> meshObject(TEXT("/Game/SurvivalGame/Dev/Meshes/SM_DevChest_Box"));
+	const ConstructorHelpers::FObjectFinder<UStaticMesh> meshObject(TEXT("/Game/GameCore/Dev/Meshes/SM_DevChest_Box"));
 	if (meshObject.Succeeded()) {
 		StaticMesh->SetStaticMesh(meshObject.Object);
 	}

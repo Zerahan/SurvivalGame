@@ -43,7 +43,7 @@ ASurvivalCharacter::ASurvivalCharacter()
 	WalkSpeedMultiplier = 0.75f;
 
 	auto* CMesh = GetMesh();
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh> meshObject(TEXT("/Game/Mannequin/Character/Mesh/SK_Mannequin_Female"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh> meshObject(TEXT("/Game/Packages/Mannequin/Character/Mesh/SK_Mannequin_Female"));
 	if (meshObject.Succeeded()) {
 		CMesh->SetSkeletalMesh(meshObject.Object);
 	}
@@ -53,7 +53,7 @@ ASurvivalCharacter::ASurvivalCharacter()
 	CMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	CMesh->SetRelativeLocation(FVector(0.f, 0.f, -96.f));
 	CMesh->SetRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
-	const ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimationObject(TEXT("/Game/Mannequin/Animations/ThirdPerson_AnimBP"));
+	const ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimationObject(TEXT("/Game/Packages/Mannequin/Animations/ThirdPerson_AnimBP"));
 	if (AnimationObject.Succeeded()) {
 		CMesh->SetAnimInstanceClass(AnimationObject.Object->GeneratedClass);
 	}
@@ -101,7 +101,7 @@ ASurvivalCharacter::ASurvivalCharacter()
 	HotbarManagerRef->SetInventorySize(4);
 
 	//if (!InventoryHUDWidgetClass) {
-		ConstructorHelpers::FClassFinder<UInventoryHUDWidget> WidgetClass (TEXT("/Game/SurvivalGame/Dev/UI/HUD_InventoryMenu")); 
+		ConstructorHelpers::FClassFinder<UInventoryHUDWidget> WidgetClass (TEXT("/Game/GameCore/Dev/UI/HUD_InventoryMenu")); 
 		if (WidgetClass.Succeeded()) {
 			InventoryHUDWidgetClass = WidgetClass.Class;
 		}
