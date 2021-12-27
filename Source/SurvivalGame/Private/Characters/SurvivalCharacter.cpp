@@ -60,7 +60,9 @@ ASurvivalCharacter::ASurvivalCharacter()
 	
 	Mesh_FirstPerson = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh_FirstPerson"));
 	Mesh_FirstPerson->SetSkeletalMesh(meshObject.Object);
-	Mesh_FirstPerson->SetAnimInstanceClass(AnimationObject.Object->GeneratedClass);
+	if (AnimationObject.Succeeded()) {
+		Mesh_FirstPerson->SetAnimInstanceClass(AnimationObject.Object->GeneratedClass);
+	}
 	Mesh_FirstPerson->SetOnlyOwnerSee(true);
 	Mesh_FirstPerson->SetOwnerNoSee(false);
 	Mesh_FirstPerson->SetupAttachment(GetCapsuleComponent());
