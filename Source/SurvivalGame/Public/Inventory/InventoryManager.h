@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "InventoryManager.generated.h"
 
-class UInventorySlot_Basic;
+class UInventorySlotData_Basic;
 class UInventoryManager_DragPayload;
 class ADroppedItem_Basic;
 struct FItemStaticData_Basic;
@@ -24,33 +24,33 @@ private:
 	/**
 	* Inventory's name. Ex: Backpack
 	*/
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Default|Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	FString DisplayName;
 
 	/**
 	* Size of InventorySlots. Sets size of InventorySlots on BeginPlay
 	*/
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	int32 InventorySize;
 
 	/**
 	* Array of slots for the inventory. Can include empty, unused slots.
 	*/
-	UPROPERTY(VisibleAnywhere, Category = "Inventory", meta = (EditFixedSize))
-	TArray<UInventorySlot_Basic*> InventorySlots;
+	UPROPERTY(VisibleAnywhere, Category = "Default|Inventory", meta = (EditFixedSize))
+	TArray<UInventorySlotData_Basic*> InventorySlots;
 
 	/**
 	* False: Only the classes in AllowedItemTypes are allowed to be added to this inventory
 	* True: Everything but the classes in AllowedItemTypes are allowed to be added to this inventory
 	*/
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	bool BanOnlyAllowedItemTypes;
 	
 	/**
 	* List of classes allowed into the slots. Can be inverted with BanOnlyAllowedItemTypes.
 	*/
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	TArray<TSubclassOf<UInventorySlot_Basic>> AllowedItemTypes;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<UInventorySlotData_Basic>> AllowedItemTypes;
 
 	/**
 	* Allows transfers between this inventory and another. Specifically useful for chests and other storage mediums seperate from the player. Should only allow a server to set this variable.
@@ -75,7 +75,7 @@ public:
 	/**
 	* If set, spawns dropped items at this ref's world location
 	*/
-	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Inventory")
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Default|Inventory")
 	USceneComponent* SpawnPointComponentRef;
 
 protected:
@@ -83,43 +83,43 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	void SetInventorySize(const int32 NewSize);
 
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	void SetDisplayName(const FString NewName);
 
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	FString GetDisplayName() const;
 
 	/**
 	* Sets the seperate inventory that this inventory can make transfers with. Example: link the player's inventory and a chests' inventory to allow transfers. Should only allow the server to use this.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	void SetLinkedInventory(UInventoryManager* NewLinkedInventoryRef = nullptr);
 
 	/**
 	* Gets the inventory linked to this one.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	UInventoryManager* GetLinkedInventory() const;
 
 	/**
 	* Returns owning actor's world location, otherwise returns SpawnPointComponentRef's world location
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	FVector GetWorldSpawnLocation() const;
 
 	/**
 	* Returns owning actor's world rotation, otherwise returns SpawnPointComponentRef's world rotation
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	FRotator GetWorldSpawnRotation() const;
 
 	/**
 	* Gets the size of the inventory.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	int32 GetInventorySize() const;
 
 	/**
@@ -127,11 +127,11 @@ public:
 	* @param TargetSlot	The slot index to copy data from.
 	* @return			The slot's pointer.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	UInventorySlot_Basic* GetSlot(const int32 TargetSlot) const;
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
+	UInventorySlotData_Basic* GetSlot(const int32 TargetSlot) const;
 
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	int32 GetIndex(UInventorySlot_Basic* SlotRef) const;
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
+	int32 GetIndex(UInventorySlotData_Basic* SlotRef) const;
 
 	/**
 	* Directly sets data within a slot in the inventory.
@@ -139,15 +139,15 @@ public:
 	* @param NewInventorySlotRef	The data to insert into the target slot.
 	* @param DoOverride				True if the function is allowed to overwrite existing data.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void SetSlot(const int32 TargetSlot, UInventorySlot_Basic* NewInventorySlotRef, const bool DoOverride = false);
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
+	void SetSlot(const int32 TargetSlot, UInventorySlotData_Basic* NewInventorySlotRef, const bool DoOverride = false);
 
 	/**
 	* Checks if the target slot contains nothing.
 	* @param TargetSlot	Index of the slot to check.
 	* @return			True if the data at the TargetSlot index is invalid, aka empty.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool IsSlotEmpty(const int32 TargetSlot) const;
 
 	/**
@@ -155,7 +155,7 @@ public:
 	* @param TargetSlot	Index of the slot to check.
 	* @return			True if the data at the TargetSlot index is invalid, aka empty.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool IsSlotOfType(const int32 TargetSlot, const FDataTableRowHandle StaticDataHandle) const;
 
 	/**
@@ -165,7 +165,7 @@ public:
 	* @param TargetSlots		The slots that contained the found amount.
 	* @return					True if the inventory contains at least AmountToFind items of type StaticDataHandle.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory", meta=(AutoCreateRefTerm="TargetSlots"))
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory", meta=(AutoCreateRefTerm="TargetSlots"))
 	bool ContainsAtLeast(const int32 AmountToFind, const FDataTableRowHandle StaticDataHandle, TArray<int32>& TargetSlots) const;
 
 	/*
@@ -174,7 +174,7 @@ public:
 	* @param StaticDataHandle	The item type to find. Can also be used to find empty slots.
 	* @return					True if a match was found. False if the end of the array was reached without a match found.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool NextSlotOfType(int32& TargetSlot, const FDataTableRowHandle& StaticDataHandle);
 
 	/*
@@ -183,7 +183,7 @@ public:
 	* @param StaticDataHandle	The item type to find. Can also be used to find empty slots.
 	* @return					True if a match was found. False if the end of the array was reached without a match found.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool PreviousSlotOfType(int32& TargetSlot, const FDataTableRowHandle& StaticDataHandle);
 
 	/**
@@ -192,7 +192,7 @@ public:
 	* @param TargetSlots	Array of indicies pointing to matching slots. Will add new data to end of array.
 	* @return				True if any matching slots were found.
 	*/
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Default|Inventory")
 	void FindSlotsOfType(const FDataTableRowHandle& StaticDataHandle, TArray<int32>& TargetSlots) const;
 
 	/**
@@ -200,7 +200,7 @@ public:
 	* @param TargetSlots	Array of indicies pointing to empty slots. Will add new data to end of array.
 	* @return				True if any empty slots were found.
 	*/
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Default|Inventory")
 	void FindEmptySlots(TArray<int32>& TargetSlots) const;
 
 	/**
@@ -210,7 +210,7 @@ public:
 	* @param Remainder	Contains any leftover data when the operation is completed.
 	* @return			True if Remainder given anything to contain.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool AddToSlot(const int32 TargetSlot, const FItemData_Simple& SimpleData, FItemData_Simple& Remainder);
 
 	/**
@@ -220,18 +220,18 @@ public:
 	* @param Remainder	Contains leftover data when the operation is completed.
 	* @return			True if Remainder given anything to contain.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool RemoveFromSlot(const int32 TargetSlot, const FItemData_Simple& SimpleData, FItemData_Simple& Remainder);
 
-	bool MergeToSlot(const int32 TargetSlot, UInventorySlot_Basic* OtherSlotRef);
+	bool MergeToSlot(const int32 TargetSlot, UInventorySlotData_Basic* OtherSlotRef);
 	/**
 	* Merges the data of two slots
 	* @param TargetSlot		The index of the slot to try to merge into.
 	* @param OtherSlotRef	The slot reference to merge.
 	* @return				True if data was merged.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	bool MergeToSlot(const int32 TargetSlot, UInventorySlot_Basic* OtherSlotRef, int32& Remainder);
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
+	bool MergeToSlot(const int32 TargetSlot, UInventorySlotData_Basic* OtherSlotRef, int32& Remainder);
 
 	/**
 	* Attempt to add all of ItemData to inventory by looping through all of its slots.
@@ -239,7 +239,7 @@ public:
 	* @param Remainder	How much was left over from the operation.
 	* @return			True if there was any remainder from the operation.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool AddToInventory(const FItemData_Simple& SimpleData, FItemData_Simple& Remainder);
 
 	/**
@@ -248,7 +248,7 @@ public:
 	* @param Remainder	How much was left over from the operation.
 	* @return			True if there was any remainder from the operation.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool RemoveFromInventory(const FItemData_Simple& SimpleData, FItemData_Simple& Remainder);
 
 	/**
@@ -256,8 +256,8 @@ public:
 	* @param OtherSlotRef	The slot reference to merge.
 	* @return				True if data was merged.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	bool MergeToInventory(UInventorySlot_Basic* OtherSlotRef, int32& Remainder);
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
+	bool MergeToInventory(UInventorySlotData_Basic* OtherSlotRef, int32& Remainder);
 
 	/**
 	* Transfer data from one slot to another slot. Can transfer between two inventories, or within one inventory.
@@ -267,7 +267,7 @@ public:
 	* @param Amount				Amount to try to move from FromSlot
 	* @return					True if data was transfered.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool TransferToSlot(const int32 ToSlot, UInventoryManager* FromInventoryRef, const int32 FromSlot, const float AmountOverride = -1.f);
 
 	/**
@@ -277,7 +277,7 @@ public:
 	* @param Amount				Amount to try to move from FromSlot. If Amount is -1, try to transfer everything in FromSlot. If Amount is -2, try to transfer everything in FromComponent of the type in FromSlot.
 	* @return					True if data was transfered.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool TransferToInventory(UInventoryManager* FromInventoryRef, const int32 FromSlot, const float AmountOverride = -1.f);
 
 	/**
@@ -287,7 +287,7 @@ public:
 	* @param FromSlot			Slot index to swap data from.
 	* @return					True if data was swapped.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool TransferSwapSlots(const int32 ToSlot, UInventoryManager* FromInventoryRef, const int32 FromSlot);
 
 	/**
@@ -300,19 +300,18 @@ public:
 	* @param CallingController The controller that started the operation.
 	* @return True if data was handled.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	bool HandleDragDropPayload(const UInventoryManager_DragPayload* Payload, const APawn* CallingPawn);
-
 
 	/**
 	* Helper function for spawning items into the world from an inventory
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	ADroppedItem_Basic* CreateDroppedItem(const TSubclassOf<ADroppedItem_Basic> SpawnedClass);
 
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Inventory")
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Default|Inventory")
 	FOnInventoryManagerSlotChangedDispatcher OnInventoryManagerSlotChangedDispatcher;
 
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Inventory")
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Default|Inventory")
 	FOnLinkedInventoryChangedDispatcher OnLinkedInventoryChangedDispatcher;
 };

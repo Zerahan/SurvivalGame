@@ -7,7 +7,7 @@
 #include "InventoryManager_DragPayload.generated.h"
 
 class UInventoryManager;
-class UInventorySlot_Basic;
+class UInventorySlotData_Basic;
 
 /**
  * 
@@ -32,7 +32,7 @@ public:
 	int32 ToInventorySlot;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory", meta = (ExposeOnSpawn = "true"))
-	UInventorySlot_Basic* BasicSlotRef;
+	UInventorySlotData_Basic* BasicSlotRef;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory", meta = (ExposeOnSpawn = "true"))
 	float AmountOverride;

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Characters/SurvivalCharacter.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -100,7 +99,7 @@ ASurvivalCharacter::ASurvivalCharacter()
 
 	HotbarManagerRef = CreateDefaultSubobject<UHotbarManager>(TEXT("Hotbar Manager"));
 	HotbarManagerRef->SetDisplayName("Hotbar");
-	HotbarManagerRef->SetInventorySize(4);
+	HotbarManagerRef->SetInventorySize(3);
 
 	//if (!InventoryHUDWidgetClass) {
 		ConstructorHelpers::FClassFinder<UInventoryHUDWidget> WidgetClass (TEXT("/Game/GameCore/Dev/UI/HUD_InventoryMenu")); 
@@ -172,7 +171,6 @@ void ASurvivalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ASurvivalCharacter::StartSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASurvivalCharacter::StopSprinting);
-	
 	
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASurvivalCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASurvivalCharacter::MoveRight);

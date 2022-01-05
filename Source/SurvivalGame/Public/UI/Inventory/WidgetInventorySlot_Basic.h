@@ -8,7 +8,7 @@
 #include "WidgetInventorySlot_Basic.generated.h"
 
 class UInventoryManager;
-class UInventorySlot_Basic;
+class UInventorySlotData_Basic;
 
 /**
  * 
@@ -28,7 +28,7 @@ public:
 	int32 TargetSlotIndex;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI|Inventory", meta = (ExposeOnSpawn = "true"))
-	UInventorySlot_Basic* ManualSlotRef;
+	UInventorySlotData_Basic* ManualSlotRef;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI|Inventory")
 	FText DisplayName;
@@ -68,5 +68,5 @@ public:
 	void SetDataFromInventory(UInventoryManager* NewInventoryRef, const int32 NewTargetSlot);
 
 	UFUNCTION(BlueprintCallable, Category = "UI|Inventory")
-	void SetDataFromSlot(UInventorySlot_Basic* NewManualSlotRef);
+	void SetDataFromSlot(UInventorySlotData_Basic* NewManualSlotRef);
 };

@@ -7,6 +7,8 @@
 #include "DEPRECATED/InventoryComponent.h"
 #include "Utility/UtilityFunctionLibrary.h"
 
+#define Debug(str) UUtilityFunctionLibrary::PrintDebug(str);
+
 // Sets default values
 ABasicTool::ABasicTool()
 {
@@ -55,7 +57,8 @@ void ABasicTool::SetOwningCharacter(ASurvivalCharacter * NewOwningCharacterRef)
 
 void ABasicTool::OnPrimaryAction_Implementation()
 {
-	UUtilityFunctionLibrary::PrintDebug("Jazz hands!");
+	Debug("Jazz hands!");
+	//UUtilityFunctionLibrary::PrintDebug("Jazz hands!");
 }
 
 void ABasicTool::OnPrimaryAction_Start()
@@ -77,7 +80,8 @@ void ABasicTool::OnPrimaryAction_End()
 
 void ABasicTool::OnSecondaryAction_Implementation()
 {
-	UUtilityFunctionLibrary::PrintDebug("Second jazz hands!");
+	Debug("Second jazz hands!");
+	//UUtilityFunctionLibrary::PrintDebug("Second jazz hands!");
 }
 
 void ABasicTool::OnSecondaryAction_Start()

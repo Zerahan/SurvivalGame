@@ -4,16 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Inventory/DroppedItem_Basic.h"
-#include "Inventory/InventorySlotData_Stack.h"
-#include "DroppedItem_Generic.generated.h"
-
-class UWidgetComponent;
+#include "Inventory/InventorySlotData_Tool.h"
+#include "DroppedItem_Tool.generated.h"
 
 /**
  * 
  */
 UCLASS(BlueprintType, Blueprintable, ClassGroup = (Custom))
-class SURVIVALGAME_API ADroppedItem_Generic : public ADroppedItem_Basic
+class SURVIVALGAME_API ADroppedItem_Tool : public ADroppedItem_Basic
 {
 	GENERATED_BODY()
 
@@ -22,19 +20,13 @@ protected:
 
 public:
 	// Sets default values for this actor's properties
-	ADroppedItem_Generic();
+	ADroppedItem_Tool();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
-	FItemSlotBuilder_Stack ItemDataBuilder;
+	FItemSlotBuilder_Tool ItemDataBuilder;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Inventory")
 	UStaticMeshComponent* RootStaticMeshComponent;
-
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Inventory")
-	UWidgetComponent* ItemDataDisplayComponent1;
-
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Inventory")
-	UWidgetComponent* ItemDataDisplayComponent2;
 
 	virtual void UpdateGraphics_Implementation() override;
 };

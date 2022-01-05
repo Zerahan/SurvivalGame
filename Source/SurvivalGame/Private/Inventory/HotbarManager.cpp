@@ -15,6 +15,7 @@ FName UHotbarManager::GetToolAttachmentSocket() const
 
 void UHotbarManager::SetToolAttachment(USceneComponent* Component, FName Socket)
 {
+	//Todo: add a way for saving multiple sockets. Aka, let this class handle left hand, right hand, etc.
 	ToolAttachmentRef = Component;
 	ToolAttachmentSocket = Socket;
 }

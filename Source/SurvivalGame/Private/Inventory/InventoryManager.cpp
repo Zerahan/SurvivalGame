@@ -3,8 +3,8 @@
 
 #include "Inventory/InventoryManager.h"
 #include "Components/ActorComponent.h"
-#include "Inventory/InventorySlot_Stack.h"
-#include "Inventory/InventorySlot_Tool.h"
+#include "Inventory/InventorySlotData_Stack.h"
+#include "Inventory/InventorySlotData_Tool.h"
 #include "Inventory/DroppedItem_Basic.h"
 #include "Inventory/DroppedItem_Generic.h"
 #include "Inventory/InventoryManager_DragPayload.h"
@@ -84,7 +84,7 @@ int32 UInventoryManager::GetInventorySize() const
 	return InventorySize;
 }
 
-UInventorySlot_Basic* UInventoryManager::GetSlot(const int32 TargetSlot) const
+UInventorySlotData_Basic* UInventoryManager::GetSlot(const int32 TargetSlot) const
 {
 	if (InventorySlots.IsValidIndex(TargetSlot)) {
 		return InventorySlots[TargetSlot];
@@ -92,7 +92,7 @@ UInventorySlot_Basic* UInventoryManager::GetSlot(const int32 TargetSlot) const
 	return nullptr;
 }
 
-int32 UInventoryManager::GetIndex(UInventorySlot_Basic* SlotRef) const
+int32 UInventoryManager::GetIndex(UInventorySlotData_Basic* SlotRef) const
 {
 	int32 index = -1;
 	if (InventorySlots.Find(SlotRef, index)) {
@@ -101,7 +101,7 @@ int32 UInventoryManager::GetIndex(UInventorySlot_Basic* SlotRef) const
 	return -1;
 }
 
-void UInventoryManager::SetSlot(const int32 TargetSlot, UInventorySlot_Basic* NewInventorySlotRef, const bool DoOverride)
+void UInventoryManager::SetSlot(const int32 TargetSlot, UInventorySlotData_Basic* NewInventorySlotRef, const bool DoOverride)
 {
 	if (InventorySlots.IsValidIndex(TargetSlot)) {
 		if (!IsValid(GetSlot(TargetSlot)) || DoOverride) {
@@ -140,7 +140,7 @@ bool UInventoryManager::ContainsAtLeast(const int32 AmountToFind, const FDataTab
 		if (IsValid(InventorySlots[i])) {
 			if (InventorySlots[i]->GetStaticDataHandle() == StaticDataHandle) {
 				TargetSlots.Add(i);
-				UInventorySlot_Stack* StackSlot = Cast<UInventorySlot_Stack>(InventorySlots[i]);
+				UInventorySlotData_Stack* StackSlot = Cast<UInventorySlotData_Stack>(InventorySlots[i]);
 				if (StackSlot) {
 					CountedAmount += StackSlot->GetAmount();
 				}
@@ -223,7 +223,7 @@ bool UInventoryManager::AddToSlot_Internal(const int32 TargetSlot, const FItemDa
 		InventorySlots[TargetSlot]->AddData(SimpleData, Remainder);
 	}
 	else {
-		UInventorySlot_Basic* NewSlot = NewObject<UInventorySlot_Basic>(this, SimpleData.StaticDataHandle.GetRow<FItemStaticData_Basic>("Creating new Slot Object for Inventory")->InstancedDataClass);
+		UInventorySlotData_Basic* NewSlot = NewObject<UInventorySlotData_Basic>(this, SimpleData.StaticDataHandle.GetRow<FItemStaticData_Basic>("Creating new Slot Object for Inventory")->InstancedDataClass);
 		InventorySlots[TargetSlot] = NewSlot;
 		NewSlot->AddData(SimpleData, Remainder);
 	}
@@ -262,16 +262,16 @@ bool UInventoryManager::RemoveFromSlot_Internal(const int32 TargetSlot, const FI
 	return Remainder.Amount > 0;
 }
 
-bool UInventoryManager::MergeToSlot(const int32 TargetSlot, UInventorySlot_Basic* OtherSlotRef)
+bool UInventoryManager::MergeToSlot(const int32 TargetSlot, UInventorySlotData_Basic* OtherSlotRef)
 {
 	int32 Def = -1;
 	return MergeToSlot(TargetSlot, OtherSlotRef, Def);
 }
 
-bool UInventoryManager::MergeToSlot(const int32 TargetSlot, UInventorySlot_Basic* InventorySlotRef, int32& Remainder)
+bool UInventoryManager::MergeToSlot(const int32 TargetSlot, UInventorySlotData_Basic* InventorySlotRef, int32& Remainder)
 {
 	if (!IsValid(InventorySlotRef)) { return false; }
-	UInventorySlot_Basic* FoundSlot = GetSlot(TargetSlot);
+	UInventorySlotData_Basic* FoundSlot = GetSlot(TargetSlot);
 	if (IsValid(FoundSlot) && FoundSlot->CanMergeData(InventorySlotRef)) {
 		FoundSlot->MergeData(InventorySlotRef, Remainder);
 		if (FoundSlot->ShouldDestroyObject()) {
@@ -327,7 +327,7 @@ bool UInventoryManager::RemoveFromInventory(const FItemData_Simple& SimpleData, 
 	return Remainder.Amount > 0;
 }
 
-bool UInventoryManager::MergeToInventory(UInventorySlot_Basic* OtherSlotRef, int32& Remainder)
+bool UInventoryManager::MergeToInventory(UInventorySlotData_Basic* OtherSlotRef, int32& Remainder)
 {
 	if (IsValid(OtherSlotRef)) {
 		int32 TargetSlot = 0;
@@ -373,7 +373,7 @@ bool UInventoryManager::MergeToInventory(UInventorySlot_Basic* OtherSlotRef, int
 bool UInventoryManager::TransferToSlot(const int32 ToSlot, UInventoryManager* FromInventoryRef, const int32 FromSlot, const float AmountOverride)
 {
 	if (InventorySlots.IsValidIndex(ToSlot)) {
-		UInventorySlot_Basic* SlotRef = FromInventoryRef->GetSlot(FromSlot);
+		UInventorySlotData_Basic* SlotRef = FromInventoryRef->GetSlot(FromSlot);
 		if (IsValid(SlotRef)) {
 			int32 Remainder = AmountOverride;
 			return MergeToSlot(ToSlot, SlotRef, Remainder);
@@ -386,7 +386,7 @@ bool UInventoryManager::TransferToInventory(UInventoryManager* FromInventoryRef,
 {
 	if (this == FromInventoryRef) { return false; }
 	if (IsValid(FromInventoryRef->GetSlot(FromSlot))) {
-		UInventorySlot_Basic* SlotRef = FromInventoryRef->GetSlot(FromSlot);
+		UInventorySlotData_Basic* SlotRef = FromInventoryRef->GetSlot(FromSlot);
 		int32 Remainder = AmountOverride;
 		if (AmountOverride == -1) {
 			// Move FromSlot only
@@ -442,7 +442,7 @@ bool UInventoryManager::TransferToInventory(UInventoryManager* FromInventoryRef,
 bool UInventoryManager::TransferSwapSlots(const int32 ToSlot, UInventoryManager* FromInventoryRef, const int32 FromSlot)
 {
 	if (InventorySlots.IsValidIndex(ToSlot)){
-		UInventorySlot_Basic* SlotRef = FromInventoryRef->GetSlot(FromSlot);
+		UInventorySlotData_Basic* SlotRef = FromInventoryRef->GetSlot(FromSlot);
 		if (IsValid(SlotRef)) {
 			FromInventoryRef->SetSlot(FromSlot, GetSlot(ToSlot), true);
 			SetSlot(ToSlot, SlotRef, true);

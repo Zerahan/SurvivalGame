@@ -4,9 +4,9 @@
 #include "UI/Inventory/WidgetInventorySlot_Basic.h"
 #include "Blueprint/UserWidget.h"
 #include "Inventory/InventoryManager.h"
-#include "Inventory/InventorySlot_Basic.h"
-#include "Inventory/InventorySlot_Stack.h"
-#include "Inventory/InventorySlot_Tool.h"
+#include "Inventory/InventorySlotData_Basic.h"
+#include "Inventory/InventorySlotData_Stack.h"
+#include "Inventory/InventorySlotData_Tool.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Utility/UtilityFunctionLibrary.h"
 
@@ -44,7 +44,7 @@ void UWidgetInventorySlot_Basic::SetDataFromInventory(UInventoryManager* NewInve
 	Execute_UpdateGraphics(this);
 }
 
-void UWidgetInventorySlot_Basic::SetDataFromSlot(UInventorySlot_Basic* NewManualSlotRef)
+void UWidgetInventorySlot_Basic::SetDataFromSlot(UInventorySlotData_Basic* NewManualSlotRef)
 {
 	ManualSlotRef = NewManualSlotRef;
 	Execute_UpdateGraphics(this);
@@ -67,7 +67,7 @@ UWidgetInventorySlot_Basic::UWidgetInventorySlot_Basic(const FObjectInitializer&
 
 void UWidgetInventorySlot_Basic::UpdateGraphics_Implementation()
 {
-	UInventorySlot_Basic* BasicRef = nullptr;
+	UInventorySlotData_Basic* BasicRef = nullptr;
 	if (IsValid(InventoryRef)) {
 		BasicRef = InventoryRef->GetSlot(TargetSlotIndex);
 		//UUtilityFunctionLibrary::PrintDebug("Valid Index: " + FString::FromInt(TargetSlotIndex));
@@ -78,7 +78,7 @@ void UWidgetInventorySlot_Basic::UpdateGraphics_Implementation()
 	if (IsValid(BasicRef)) {
 		FDataTableRowHandle StaticDataHandle = BasicRef->GetStaticDataHandle();
 		if (!StaticDataHandle.IsNull()) {
-			if (auto StackRef = Cast<UInventorySlot_Stack>(BasicRef)) {
+			if (auto StackRef = Cast<UInventorySlotData_Stack>(BasicRef)) {
 				FItemStaticData_Stack StaticData = *StaticDataHandle.GetRow<FItemStaticData_Stack>("InventorySlot UI");
 				if (DisplayName.ToString() != StaticData.DisplayName) {
 					DisplayName = FText::FromString(StaticData.DisplayName);
@@ -90,7 +90,7 @@ void UWidgetInventorySlot_Basic::UpdateGraphics_Implementation()
 					Amount = StackRef->GetAmount();
 				}
 			}
-			else if(auto ToolRef = Cast<UInventorySlot_Tool>(BasicRef)) {
+			else if(auto ToolRef = Cast<UInventorySlotData_Tool>(BasicRef)) {
 				FItemStaticData_Tool StaticData = *StaticDataHandle.GetRow<FItemStaticData_Tool>("InventorySlot UI");
 				if (DisplayName.ToString() != StaticData.DisplayName) {
 					DisplayName = FText::FromString(StaticData.DisplayName);

@@ -3,7 +3,7 @@
 
 #include "Inventory/DroppedItem_Basic.h"
 #include "GameFramework/Actor.h"
-#include "Inventory/InventorySlot_Basic.h"
+#include "Inventory/InventorySlotData_Basic.h"
 #include "Inventory/InventoryManager.h"
 #include "Interfaces/InteractionInterface.h"
 #include "Utility/UtilityFunctionLibrary.h"
@@ -29,9 +29,9 @@ void ADroppedItem_Basic::Tick(float DeltaTime)
 
 }
 
-UInventorySlot_Basic* ADroppedItem_Basic::GetItemSlot() const { return ItemData; }
+UInventorySlotData_Basic* ADroppedItem_Basic::GetItemSlot() const { return ItemData; }
 
-void ADroppedItem_Basic::SetItemSlot(UInventorySlot_Basic* NewItemData)
+void ADroppedItem_Basic::SetItemSlot(UInventorySlotData_Basic* NewItemData)
 {
 	ItemData = NewItemData;
 	ItemData->Rename(nullptr, this);

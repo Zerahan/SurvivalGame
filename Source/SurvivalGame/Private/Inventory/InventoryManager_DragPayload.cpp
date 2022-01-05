@@ -3,7 +3,7 @@
 
 #include "Inventory/InventoryManager_DragPayload.h"
 #include "Inventory/InventoryManager.h"
-#include "Inventory/InventorySlot_Basic.h"
+#include "Inventory/InventorySlotData_Basic.h"
 
 UInventoryManager_DragPayload::UInventoryManager_DragPayload() {
 	FromInventoryManagerRef	= nullptr;

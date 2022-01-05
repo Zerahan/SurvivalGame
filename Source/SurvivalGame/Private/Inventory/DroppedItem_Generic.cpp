@@ -5,7 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Inventory/WidgetInventorySlot_Basic.h"
-#include "Inventory/InventorySlot_Stack.h"
+#include "Inventory/InventorySlotData_Stack.h"
 #include "Utility/UtilityFunctionLibrary.h"
 
 // Sets default values
@@ -44,9 +44,14 @@ ADroppedItem_Generic::ADroppedItem_Generic()
 void ADroppedItem_Generic::BeginPlay()
 {
 	if (ItemDataBuilder.IsValid()) {
-		UInventorySlot_Stack* NewSlot = NewObject<UInventorySlot_Stack>(this, ItemDataBuilder.StaticDataHandle.GetRow<FItemStaticData_Stack>("Creating new Slot Object for Inventory")->InstancedDataClass);
-		NewSlot->SetFromData(ItemDataBuilder);
-		SetItemSlot(NewSlot);
+		FItemStaticData_Stack LoadedStaticData = *ItemDataBuilder.StaticDataHandle.GetRow<FItemStaticData_Stack>("Creating new Slot Object for Inventory");
+		if ( FItemStaticData_Stack::IsValid(LoadedStaticData) ) {
+			UInventorySlotData_Stack* NewSlot = NewObject<UInventorySlotData_Stack>(this, LoadedStaticData.InstancedDataClass);
+			if (NewSlot) {
+				NewSlot->SetFromData(ItemDataBuilder);
+				SetItemSlot(NewSlot);
+			}
+		}
 	}
 
 	Super::BeginPlay();

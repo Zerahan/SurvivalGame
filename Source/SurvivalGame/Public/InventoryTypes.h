@@ -10,37 +10,75 @@ class ADroppedItem_Basic;
 class ABasicTool;
 class UBasicInventoryReserverComponent;
 class UBasicItemData;
-class UInventorySlot_Basic;
+class UInventorySlotData_Basic;
 class UBasicItemData;
 //class UInventoryComponent;
 
+UENUM(BlueprintType)//, 
+enum class EItemType : uint8
+{
+	None			UMETA(DisplayName = "None"),
+	Item			UMETA(DisplayName = "Item"),
+	Consumable		UMETA(DisplayName = "Consumable"),
+	Ammo			UMETA(DisplayName = "Ammo"),
+	Tool			UMETA(DisplayName = "Tool"),
+	Weapon			UMETA(DisplayName = "Weapon"),
+	Component		UMETA(DisplayName = "Component"),
+};
+
 UENUM(BlueprintType)
-enum EItemSubtype
+enum class EAmmoSubtype : uint8
 {
 	None				UMETA(DisplayName = "None"),
-	Item				UMETA(DisplayName = "Item"),
-	Ammo				UMETA(DisplayName = "Ammo"),
-	Ammo_Electricity	UMETA(DisplayName = "Ammo|Electricity"),
-	Ammo_Bullet			UMETA(DisplayName = "Ammo|Bullet"),
-	Tool				UMETA(DisplayName = "Tool"),
-	Weapon				UMETA(DisplayName = "Weapon"),
-	ToolPart			UMETA(DisplayName = "Component"),
-	ToolPart_Welder		UMETA(DisplayName = "Component|Welder"),
+	Electric_10			UMETA(DisplayName = "10a Charger"),
+	Electric_20			UMETA(DisplayName = "20a Charger"),
+	Electric_40			UMETA(DisplayName = "40a Charger"),
+	Bullet_9			UMETA(DisplayName = "9mm Round"),
+	Bullet_556			UMETA(DisplayName = "5.56 Round"),
+	Bullet_762			UMETA(DisplayName = "7.62 Round"),
+	Bullet_Scatter		UMETA(DisplayName = "Buckshot"),
+	Bullet_Slug			UMETA(DisplayName = "Slug"),
+};
+
+UENUM(BlueprintType, meta = (Bitflags, UseEnumValuesAsMaskValuesInEditor = "true"))
+enum class EComponentSubtype : uint8
+{
+	None	= 0 UMETA(Hidden),
+	Tool	= 1 << 0 UMETA(DisplayName = "Tool"),
+	Weapon	= 1 << 1 UMETA(DisplayName = "Weapon"),
+	Machine = 1 << 2 UMETA(DisplayName = "Machine"),
+};
+ENUM_CLASS_FLAGS(EComponentSubtype);
+
+USTRUCT(BlueprintType)
+struct SURVIVALGAME_API FItemTypeRestriction {
+	GENERATED_BODY()
+
+	FItemTypeRestriction(uint8 NewTypeID = -1, bool InvertRestriction = false);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
+	uint8 TypeID;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
+	bool IsInverted;
+
+	bool IsMatching(const uint8 ItemTypeID, bool UseBitmask = false) const;
+	static bool IsAllMatching(const uint8 ItemType, const uint8 ItemSubtype, const FItemTypeRestriction TypeRestriction, const FItemTypeRestriction SubtypeRestriction);
 };
 
 USTRUCT(BlueprintType)
 struct SURVIVALGAME_API FItemData_Simple {
 	GENERATED_BODY()
 
-	//FItemData_Simple() : FItemData_Simple(nullptr, NAME_None, -1, -1) {}
-	//FItemData_Simple(UDataTable* DataTable, const FName RowName) : FItemData_Simple(DataTable, RowName, -1, -1) {}
-	//FItemData_Simple(UDataTable* DataTable, const FName RowName, const int32 NewAmount = -1) : FItemData_Simple(DataTable, RowName, NewAmount, -1) {}
-	FItemData_Simple(UDataTable* DataTable = nullptr, const FName RowName = NAME_None, const int32 NewAmount = -1, const FString NewSubtype = "None");
+	FItemData_Simple(UDataTable* DataTable = nullptr, const FName RowName = NAME_None, const int32 NewAmount = -1);
+	FItemData_Simple(const uint8 NewType, const uint8 NewSubtype, const int32 NewAmount = -1);
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
 	FDataTableRowHandle StaticDataHandle;
 
-	FString Subtype;
+	uint8 Type;
+	uint8 Subtype;
+	//FString Subtype;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
 	int32 Amount;

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Inventory/InventorySlot_Stack.h"
+#include "Inventory/InventorySlotData_Stack.h"
 #include "InventoryTypes.h"
 
 
@@ -10,16 +10,18 @@
 // STRUCT //
 //********//
 
-FInventorySlotData_Stack::FInventorySlotData_Stack(UDataTable* DataTable, const FName RowName, const int32 NewAmount) {
+FItemSlotBuilder_Stack::FItemSlotBuilder_Stack(UDataTable* DataTable, const FName RowName, const int32 NewAmount) {
     StaticDataHandle            = FDataTableRowHandle();
     StaticDataHandle.DataTable  = DataTable;
     StaticDataHandle.RowName    = RowName;
     Amount                      = NewAmount;
 }
 
-bool FInventorySlotData_Stack::IsValid() const
+bool FItemSlotBuilder_Stack::IsValid() const
 {
-    return !StaticDataHandle.IsNull();
+    if(StaticDataHandle.IsNull()) return false;
+    if(StaticDataHandle.DataTable->FindRowUnchecked(StaticDataHandle.RowName)) return true;
+    return false;
 }
 
 FItemStaticData_Stack::FItemStaticData_Stack()
@@ -29,10 +31,12 @@ FItemStaticData_Stack::FItemStaticData_Stack()
     Icon                = nullptr;
     MaxStackSize        = 1;
     StackCompressSize   = 1;
-    Subtype             = "None";
+    IsContainer         = false;
+    TypeID              = -1;
+    SubTypeID           = -1;
     AbilityClass        = nullptr;
     SpawnedClass        = nullptr;
-    InstancedDataClass  = UInventorySlot_Stack::StaticClass();
+    InstancedDataClass  = UInventorySlotData_Stack::StaticClass();
 }
 
 bool FItemStaticData_Stack::IsValid(const FItemStaticData_Stack& StaticData)
@@ -46,43 +50,24 @@ bool FItemStaticData_Stack::IsValid(const FItemStaticData_Stack& StaticData)
 // CLASS //
 //*******//
 
-UInventorySlot_Stack::UInventorySlot_Stack()
+void UInventorySlotData_Stack::SetAmount(const int32 NewAmount)
 {
+    Amount = NewAmount;
 }
 
-inline void UInventorySlot_Stack::SetAmount(const int32 NewAmount) { Amount = NewAmount; }
-
-inline int32 UInventorySlot_Stack::GetAmount() const { return Amount; }
-
-void UInventorySlot_Stack::SetStaticDataHandle(const FDataTableRowHandle& NewStaticDataHandle)
-{
-    Super::SetStaticDataHandle(NewStaticDataHandle);
-}
-
-FItemStaticData_Stack UInventorySlot_Stack::LookupStaticData(UInventorySlot_Stack* SlotToFind)
-{
-    if (!SlotToFind->GetStaticDataHandle().IsNull()) {
-        FItemStaticData_Stack StaticData = *SlotToFind->GetStaticDataHandle().GetRow<FItemStaticData_Stack>("UInventorySlot_Stack looking for static data");
-        if (FItemStaticData_Stack::IsValid(StaticData)) {
-            return StaticData;
-        }
-    }
-    return FItemStaticData_Stack();
-}
-
-void UInventorySlot_Stack::SetFromData(const FInventorySlotData_Stack NewSlotData)
+void UInventorySlotData_Stack::SetFromData(const FItemSlotBuilder_Stack& NewSlotData)
 {
     SetStaticDataHandle(NewSlotData.StaticDataHandle);
     Amount = NewSlotData.Amount;
 }
 
-bool UInventorySlot_Stack::AddData(const FItemData_Simple& DataToAdd, FItemData_Simple& Remainder)
+bool UInventorySlotData_Stack::AddData(const FItemData_Simple& DataToAdd, FItemData_Simple& Remainder)
 {
     if (DataToAdd.StaticDataHandle != GetStaticDataHandle()) {
         Remainder = DataToAdd;
         return true;
     }
-    FItemStaticData_Stack StaticData = LookupStaticData(this);
+    FItemStaticData_Stack StaticData = UInventorySlotData_Stack::LookupStaticData(this);
     if (FItemStaticData_Stack::IsValid(StaticData)) {
         if (Amount + DataToAdd.Amount <= StaticData.MaxStackSize) {
             Amount += DataToAdd.Amount;
@@ -98,7 +83,7 @@ bool UInventorySlot_Stack::AddData(const FItemData_Simple& DataToAdd, FItemData_
     return false;
 }
 
-bool UInventorySlot_Stack::RemoveData(const FItemData_Simple& DataToRemove, FItemData_Simple& Remainder)
+bool UInventorySlotData_Stack::RemoveData(const FItemData_Simple& DataToRemove, FItemData_Simple& Remainder)
 {
     if (DataToRemove.StaticDataHandle != GetStaticDataHandle()) {
         Remainder = DataToRemove;
@@ -117,21 +102,21 @@ bool UInventorySlot_Stack::RemoveData(const FItemData_Simple& DataToRemove, FIte
     return false;
 }
 
-bool UInventorySlot_Stack::CanMergeData(UInventorySlot_Basic* OtherSlot) const
+bool UInventorySlotData_Stack::CanMergeData(UInventorySlotData_Basic* OtherSlot) const
 {
     if (!Super::CanMergeData(OtherSlot)) { return false; }
-    if (!IsValid(Cast<UInventorySlot_Stack>(OtherSlot))) { return false; }
-    //UInventorySlot_Stack* Slot = ;
+    if (!IsValid(Cast<UInventorySlotData_Stack>(OtherSlot))) { return false; }
+    //UInventorySlotData_Stack* Slot = ;
     return GetStaticDataHandle() == OtherSlot->GetStaticDataHandle();
 }
 
-bool UInventorySlot_Stack::MergeData(UInventorySlot_Basic* OtherSlot, int32& AmountOverride)
+bool UInventorySlotData_Stack::MergeData(UInventorySlotData_Basic* OtherSlot, int32& AmountOverride)
 {
     if (AmountOverride == 0) { return false; }
     if (!Super::MergeData(OtherSlot, AmountOverride)) { return false; }
-    FItemStaticData_Stack StaticData = LookupStaticData(this);
+    FItemStaticData_Stack StaticData = UInventorySlotData_Stack::LookupStaticData(this);
     //if (!StaticData.IsTransferrable) { return false; }
-    UInventorySlot_Stack* OtherSlotRef = Cast<UInventorySlot_Stack>(OtherSlot);
+    UInventorySlotData_Stack* OtherSlotRef = Cast<UInventorySlotData_Stack>(OtherSlot);
     if (OtherSlotRef && FItemStaticData_Stack::IsValid(StaticData)) {
         float MoveAmount = OtherSlotRef->GetAmount();
         if(AmountOverride > 0 && AmountOverride <= OtherSlotRef->GetAmount()){
@@ -152,19 +137,31 @@ bool UInventorySlot_Stack::MergeData(UInventorySlot_Basic* OtherSlot, int32& Amo
     return false;
 }
 
-bool UInventorySlot_Stack::ShouldDestroyObject() const
+bool UInventorySlotData_Stack::ShouldDestroyObject() const
 {
     // If the object is a container, don't destroy when amount is 0.
-    if (IsContainer) { return false; }
+    FItemStaticData_Stack StaticData = UInventorySlotData_Stack::LookupStaticData(this);
+    if (FItemStaticData_Stack::IsValid(StaticData)) {
+        if (StaticData.IsContainer) { return false; }
+    }
     return Amount == 0;
 }
 
-UInventorySlot_Stack* UInventorySlot_Stack::CreateNewSlotFromHandle(const FDataTableRowHandle Handle, UObject* NewOuter)
+FItemStaticData_Stack UInventorySlotData_Stack::LookupStaticData(const UInventorySlotData_Basic* SlotToFind)
+{
+    FItemStaticData_Stack ReturnedStaticData = FItemStaticData_Stack();
+    if (!IsValid(SlotToFind)) return ReturnedStaticData;
+    if (SlotToFind->GetStaticDataHandle().IsNull()) return ReturnedStaticData;
+    ReturnedStaticData = *SlotToFind->GetStaticDataHandle().GetRow<FItemStaticData_Stack>("InventorySlotData_Basic attempting to get data table row...");
+    return ReturnedStaticData;
+}
+
+UInventorySlotData_Stack* UInventorySlotData_Stack::CreateNewSlotFromHandle(const FDataTableRowHandle Handle, UObject* NewOuter)
 {
     if (Handle.IsNull() || !IsValid(NewOuter)) { return nullptr; }
     FItemStaticData_Stack StaticData = *Handle.GetRow<FItemStaticData_Stack>("");
     if (FItemStaticData_Stack::IsValid(StaticData)) {
-        UInventorySlot_Stack* NewSlot = NewObject<UInventorySlot_Stack>(NewOuter, StaticData.InstancedDataClass);
+        UInventorySlotData_Stack* NewSlot = NewObject<UInventorySlotData_Stack>(NewOuter, StaticData.InstancedDataClass);
         NewSlot->SetStaticDataHandle(Handle);
         return NewSlot;
     }

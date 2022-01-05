@@ -9,16 +9,18 @@ ASecurityCamera_Basic::ASecurityCamera_Basic()
 	:Super()
 {
 	CameraMount = CreateDefaultSubobject<USceneComponent>(TEXT("CameraMount"));
-	CameraMount->SetupAttachment(GetRootComponent(), FName("head"));
-	CameraMount->SetRelativeLocationAndRotation(FVector(5, 0, 0), FRotator(0, 90, -90));
+	CameraMount->SetupAttachment(GetRootComponent());
+	//CameraMount->SetRelativeLocationAndRotation(FVector(5, 0, 0), FRotator(0, 90, -90));
 
 	CameraLookOverride = CreateDefaultSubobject<USceneComponent>(TEXT("CameraLookOverride"));
 	CameraLookOverride->SetupAttachment(CameraMount);
 
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	CameraMesh->SetupAttachment(CameraLookOverride);
-	CameraMesh->SetRelativeLocation(FVector(45, 0, 5));
 	CameraMesh->SetRelativeScale3D(FVector(0.75f, 1.f, 1.f));
+	//CameraMesh->SetRelativeRotation(FRotator(90, 0, 90));
+	CameraMesh->SetRelativeLocation(FVector(40, 0, 0));
+	CameraMesh->bOwnerNoSee = true;
 
 #ifdef CLIENT
 	//if (GEngine->GetNetMode(GetWorld()) == NM_Client) {

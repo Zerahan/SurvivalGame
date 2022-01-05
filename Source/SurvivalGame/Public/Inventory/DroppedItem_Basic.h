@@ -7,7 +7,7 @@
 #include "Interfaces/InteractionInterface.h"
 #include "DroppedItem_Basic.generated.h"
 
-class UInventorySlot_Basic;
+class UInventorySlotData_Basic;
 
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FOnUpdateGraphics, ADroppedItem_Basic, OnUpdateGraphicsDispatcher);
 
@@ -21,7 +21,7 @@ public:
 	ADroppedItem_Basic();
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Inventory")
-	UInventorySlot_Basic* ItemData;
+	UInventorySlotData_Basic* ItemData;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Inventory")
 	AController* InteractingControllerRef;
@@ -35,10 +35,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	UInventorySlot_Basic* GetItemSlot() const;
+	UInventorySlotData_Basic* GetItemSlot() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void SetItemSlot(UInventorySlot_Basic* NewItemData);
+	void SetItemSlot(UInventorySlotData_Basic* NewItemData);
 
 	bool CanInteract_Implementation(const FInteractionInfo Info) const override;
 	void BeginInteraction_Implementation(const FInteractionInfo Info) override;
