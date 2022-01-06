@@ -37,7 +37,7 @@ public:
 	FText Description;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI|Inventory")
-	UTexture* IconTexture;
+	UTexture2D* IconTexture;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI|Inventory")
 	int32 Amount;

@@ -11,6 +11,31 @@
 //class UInventorySlotData_Stack;
 class AItemTool_Basic;
 
+USTRUCT(BlueprintType)
+struct SURVIVALGAME_API FItemStaticData_Tool : public FTableRowBase {
+	GENERATED_BODY()
+
+	FItemStaticData_Tool();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemStaticData_Basic BasicData;
+
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EAmmoSubtype AmmoSubtype;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 AmmoConsumedPerUse;
+
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
+	//TArray<FString> InternalSlotRestrictions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AItemTool_Basic> EquippedClass;
+
+	static bool IsValid(const FItemStaticData_Tool& StaticData);
+};
+
 USTRUCT(BlueprintType, Blueprintable)
 struct SURVIVALGAME_API FItemSlotBuilder_Tool : public FItemSlotBuilder_Basic {
 	GENERATED_BODY()
@@ -19,27 +44,6 @@ struct SURVIVALGAME_API FItemSlotBuilder_Tool : public FItemSlotBuilder_Basic {
 	TArray<FItemSlotBuilder_Stack> InternalSlots;
 
 	bool IsValid() const;
-};
-
-USTRUCT(BlueprintType)
-struct SURVIVALGAME_API FItemStaticData_Tool : public FItemStaticData_Basic {
-	GENERATED_BODY()
-
-	FItemStaticData_Tool();
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
-	FString AmmoSubtype;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
-	int32 AmmoConsumedPerUse;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
-	TArray<FString> InternalSlotRestrictions;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Inventory")
-	TSubclassOf<AItemTool_Basic> EquippedClass;
-
-	static bool IsValid(const FItemStaticData_Tool& StaticData);
 };
 
 /**

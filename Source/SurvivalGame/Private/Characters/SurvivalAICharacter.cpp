@@ -9,8 +9,8 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Utility/UtilityFunctionLibrary.h"
 
-#define DebugC(str, color) (GEngine->AddOnScreenDebugMessage(-1, 5.f, color, str))
-#define Debug(str) (DebugC(str,FColor::Red))
+//#define DebugC(str, color) (GEngine->AddOnScreenDebugMessage(-1, 5.f, color, str))
+//#define Debug(str) (DebugC(str,FColor::Red))
 
 // Sets default values
 ASurvivalAICharacter::ASurvivalAICharacter()

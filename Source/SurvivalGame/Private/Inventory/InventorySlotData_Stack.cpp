@@ -2,6 +2,7 @@
 
 
 #include "Inventory/InventorySlotData_Stack.h"
+#include "Inventory/DroppedItem_Generic.h"
 #include "InventoryTypes.h"
 
 
@@ -26,22 +27,17 @@ bool FItemSlotBuilder_Stack::IsValid() const
 
 FItemStaticData_Stack::FItemStaticData_Stack()
 {
-    DisplayName         = "DEFAULT_NAME";
-    Description         = "DEFAULT_DESC";
-    Icon                = nullptr;
+    BasicData                       = FItemStaticData_Basic();
+
     MaxStackSize        = 1;
     StackCompressSize   = 1;
     IsContainer         = false;
-    TypeID              = -1;
-    SubTypeID           = -1;
     AbilityClass        = nullptr;
-    SpawnedClass        = nullptr;
-    InstancedDataClass  = UInventorySlotData_Stack::StaticClass();
 }
 
 bool FItemStaticData_Stack::IsValid(const FItemStaticData_Stack& StaticData)
 {
-    return StaticData.DisplayName != "DEFAULT_NAME";
+    return FItemStaticData_Basic::IsValid(StaticData.BasicData);
 }
 
 
@@ -161,7 +157,7 @@ UInventorySlotData_Stack* UInventorySlotData_Stack::CreateNewSlotFromHandle(cons
     if (Handle.IsNull() || !IsValid(NewOuter)) { return nullptr; }
     FItemStaticData_Stack StaticData = *Handle.GetRow<FItemStaticData_Stack>("");
     if (FItemStaticData_Stack::IsValid(StaticData)) {
-        UInventorySlotData_Stack* NewSlot = NewObject<UInventorySlotData_Stack>(NewOuter, StaticData.InstancedDataClass);
+        UInventorySlotData_Stack* NewSlot = NewObject<UInventorySlotData_Stack>(NewOuter, (StaticData.BasicData.InstancedDataClass != nullptr ? StaticData.BasicData.InstancedDataClass : UInventorySlotData_Stack::StaticClass()));
         NewSlot->SetStaticDataHandle(Handle);
         return NewSlot;
     }

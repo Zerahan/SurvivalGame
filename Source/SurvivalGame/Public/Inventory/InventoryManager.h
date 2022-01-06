@@ -4,13 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/DataTable.h"
+#include "Inventory/InventorySlotData_Basic.h"
 #include "InventoryManager.generated.h"
 
 class UInventorySlotData_Basic;
 class UInventoryManager_DragPayload;
 class ADroppedItem_Basic;
-struct FItemStaticData_Basic;
-struct FDataTableRowHandle;
+//struct FItemStaticData_Basic;
+//struct FDataTableRowHandle;
 
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(FOnInventoryManagerSlotChangedDispatcher, UInventoryManager, OnInventoryManagerSlotChangedDispatcher, int32, TargetSlot);
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FOnLinkedInventoryChangedDispatcher, UInventoryManager, OnLinkedInventoryChangedDispatcher);

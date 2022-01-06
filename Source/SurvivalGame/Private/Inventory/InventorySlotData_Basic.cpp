@@ -17,41 +17,15 @@ bool FItemSlotBuilder_Basic::IsValid() const
 	return false;
 }
 
-/*/
-template<typename StaticDataStruct>
-FORCEINLINE bool UItemData_Basic::LookupStaticData(StaticDataStruct& ReturnValue)
-{
-	if(!IsValid()) return false;
-	ReturnValue = StaticDataHandle.GetRow<StaticDataStruct>(ThisClass::GetFName().ToString() + " tried looking for static data of type" + StaticDataStruct::StaticStruct()->GetFName().ToString() + "...");
-	return true;
-}
-
-template<typename ItemDataType>
-bool UItemData_Basic::IsAllowed_Basic(const ItemDataType* DataToCheck) const
-{
-	return false;
-}
-
-bool UItemData_Basic::IsAllowed_Simple(const FItemData_Simple& DataToCheck) const
-{
-	return StaticDataHandle == DataToCheck.StaticDataHandle;
-}
-
-bool UItemData_Basic::IsValid() const
-{
-	if (StaticDataHandle.IsNull()) return false;
-	if (StaticDataHandle.DataTable->FindRowUnchecked(StaticDataHandle.RowName)) return true;
-	return false;
-}
-//*/
-
 FItemStaticData_Basic::FItemStaticData_Basic()
 {
 	DisplayName			= "DEFAULT_NAME";
 	Description			= "DEFAULT_DESC";
+	ItemType			= EItemType::None;
+	ItemSubtype			= 0;
 	Icon				= nullptr;
+	InstancedDataClass	= nullptr;
 	SpawnedClass		= nullptr;
-	InstancedDataClass	= UInventorySlotData_Basic::StaticClass();
 }
 
 bool FItemStaticData_Basic::IsValid(const FItemStaticData_Basic& StaticData)
@@ -112,7 +86,7 @@ UInventorySlotData_Basic* UInventorySlotData_Basic::CreateNewSlotFromHandle(cons
 	if (Handle.IsNull() || !IsValid(NewOuter)) { return nullptr; }
 	FItemStaticData_Basic StaticData = *Handle.GetRow<FItemStaticData_Basic>("");
 	if (FItemStaticData_Basic::IsValid(StaticData)) {
-		UInventorySlotData_Basic* NewSlot = NewObject<UInventorySlotData_Basic>(NewOuter, StaticData.InstancedDataClass);
+		UInventorySlotData_Basic* NewSlot = NewObject<UInventorySlotData_Basic>(NewOuter, (StaticData.InstancedDataClass != nullptr ? StaticData.InstancedDataClass : UInventorySlotData_Basic::StaticClass()));
 		NewSlot->SetStaticDataHandle(Handle);
 		return NewSlot;
 	}

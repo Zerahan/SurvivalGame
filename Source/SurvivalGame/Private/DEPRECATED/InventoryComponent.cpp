@@ -52,14 +52,14 @@ void UInventoryComponent::SetSlotData(const int32 TargetSlot, const FItemSlot It
 		InventorySlots[TargetSlot] = ItemData;
 
 		// Initializes instanced data if necissary
-		if ( !IsValid(ItemData.InstancedDataRef) ) {
+		//if ( !IsValid(ItemData.InstancedDataRef) ) {
 			FItemStaticData StaticData;
 			if (LookupStaticData(ItemData, StaticData)) {
-				if (StaticData.InstancedDataClass && StaticData.InstancedDataClass != UBasicItemData::StaticClass()) {
-					InventorySlots[TargetSlot].InstancedDataRef = NewObject<UBasicItemData>(GetOwner(), StaticData.InstancedDataClass);
-				}
+		//		if (StaticData.BasicData.InstancedDataClass && StaticData.InstancedDataClass != UBasicItemData::StaticClass()) {
+		//			InventorySlots[TargetSlot].InstancedDataRef = NewObject<UBasicItemData>(GetOwner(), StaticData.BasicData.InstancedDataClass);
+		//		}
 			}
-		}
+		//}
 		OnInventorySlotChangedDispatcher.Broadcast(TargetSlot);
 	}
 }

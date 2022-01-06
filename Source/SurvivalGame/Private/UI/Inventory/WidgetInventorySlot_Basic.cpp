@@ -80,10 +80,10 @@ void UWidgetInventorySlot_Basic::UpdateGraphics_Implementation()
 		if (!StaticDataHandle.IsNull()) {
 			if (auto StackRef = Cast<UInventorySlotData_Stack>(BasicRef)) {
 				FItemStaticData_Stack StaticData = *StaticDataHandle.GetRow<FItemStaticData_Stack>("InventorySlot UI");
-				if (DisplayName.ToString() != StaticData.DisplayName) {
-					DisplayName = FText::FromString(StaticData.DisplayName);
-					Description = FText::FromString(StaticData.Description);
-					IconTexture = StaticData.Icon.LoadSynchronous();
+				if (DisplayName.ToString() != StaticData.BasicData.DisplayName) {
+					DisplayName = FText::FromString(StaticData.BasicData.DisplayName);
+					Description = FText::FromString(StaticData.BasicData.Description);
+					IconTexture = StaticData.BasicData.Icon.LoadSynchronous();
 					CompressAmount = StaticData.StackCompressSize;
 				}
 				if (StaticData.MaxStackSize > 1) {
@@ -92,10 +92,10 @@ void UWidgetInventorySlot_Basic::UpdateGraphics_Implementation()
 			}
 			else if(auto ToolRef = Cast<UInventorySlotData_Tool>(BasicRef)) {
 				FItemStaticData_Tool StaticData = *StaticDataHandle.GetRow<FItemStaticData_Tool>("InventorySlot UI");
-				if (DisplayName.ToString() != StaticData.DisplayName) {
-					DisplayName = FText::FromString(StaticData.DisplayName);
-					Description = FText::FromString(StaticData.Description);
-					IconTexture = StaticData.Icon.LoadSynchronous();
+				if (DisplayName.ToString() != StaticData.BasicData.DisplayName) {
+					DisplayName = FText::FromString(StaticData.BasicData.DisplayName);
+					Description = FText::FromString(StaticData.BasicData.Description);
+					IconTexture = StaticData.BasicData.Icon.LoadSynchronous();
 					Amount = -1;
 					CompressAmount = -1;
 				}

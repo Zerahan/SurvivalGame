@@ -13,6 +13,36 @@ class ADroppedItem_Basic;
 // Serialize with FObjectWriter/FObjectReader
 
 USTRUCT(BlueprintType)
+struct SURVIVALGAME_API FItemStaticData_Basic : public FTableRowBase {
+	GENERATED_BODY()
+
+	FItemStaticData_Basic();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString DisplayName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EItemType ItemType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	uint8 ItemSubtype;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<UTexture2D> Icon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UInventorySlotData_Basic> InstancedDataClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ADroppedItem_Basic> SpawnedClass;
+
+	static bool IsValid(const FItemStaticData_Basic& StaticData);
+};
+
+USTRUCT(BlueprintType)
 struct FItemSlotBuilder_Basic {
 	GENERATED_BODY()
 
@@ -23,37 +53,6 @@ public:
 	FDataTableRowHandle StaticDataHandle;
 
 	bool IsValid() const;
-};
-
-
-USTRUCT(BlueprintType)
-struct SURVIVALGAME_API FItemStaticData_Basic : public FTableRowBase {
-	GENERATED_BODY()
-	
-	FItemStaticData_Basic();
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
-	FString DisplayName;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
-	FString Description;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
-	TSoftObjectPtr<UTexture> Icon;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
-	TSubclassOf<UInventorySlotData_Basic> InstancedDataClass;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
-	EItemType ItemType;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
-	uint8 ItemSubtype;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
-	TSubclassOf<ADroppedItem_Basic> SpawnedClass;
-
-	static bool IsValid(const FItemStaticData_Basic& StaticData);
 };
 /**
  * 

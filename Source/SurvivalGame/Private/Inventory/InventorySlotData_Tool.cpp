@@ -5,8 +5,8 @@
 #include "InventoryTypes.h"
 #include "Inventory/InventorySlotData_Stack.h"
 #include "Inventory/InventoryManager.h"
+#include "Inventory/DroppedItem_Tool.h"
 //#include "Inventory/InventorySlot_Basic.h"
-
 
 //********//
 // STRUCT //
@@ -27,16 +27,16 @@ bool FItemSlotBuilder_Tool::IsValid() const
 
 FItemStaticData_Tool::FItemStaticData_Tool()
 {
-	DisplayName			= "DEFAULT_NAME";
-	Description			= "DEFAULT_DESC";
-	Icon				= nullptr;
-	SpawnedClass		= nullptr;
-	InstancedDataClass	= UInventorySlotData_Tool::StaticClass();
+	BasicData						= FItemStaticData_Basic();
+
+	AmmoSubtype			= EAmmoSubtype::None;
+	AmmoConsumedPerUse	= 0;
+	EquippedClass		= nullptr;
 }
 
 bool FItemStaticData_Tool::IsValid(const FItemStaticData_Tool& StaticData)
 {
-	return StaticData.DisplayName != "DEFAULT_NAME";
+	return FItemStaticData_Basic::IsValid(StaticData.BasicData);
 }
 
 
@@ -49,7 +49,7 @@ UInventorySlotData_Tool::UInventorySlotData_Tool()
 	if (!GetStaticDataHandle().IsNull()) {
 		FItemStaticData_Tool StaticData = *GetStaticDataHandle().GetRow<FItemStaticData_Tool>("Initializing InventorySlot_Tool from GetStaticDataHandle()");
 		if (FItemStaticData_Tool::IsValid(StaticData)) {
-			InternalSlots.AddDefaulted(StaticData.InternalSlotRestrictions.Num());
+			//InternalSlots.AddDefaulted(StaticData.InternalSlotRestrictions.Num());
 		}
 	}
 	AmmoSlotRef = nullptr;
@@ -128,9 +128,9 @@ bool UInventorySlotData_Tool::CanMergeData(UInventorySlotData_Basic* OtherSlot) 
 	FItemStaticData_Stack OtherStaticData = *OtherSlot->GetStaticDataHandle().GetRow<FItemStaticData_Stack>("CanMergeData on InventorySlot_Tool");
 	if (FItemStaticData_Stack::IsValid(OtherStaticData)) {
 		FItemStaticData_Tool StaticData = *GetStaticDataHandle().GetRow<FItemStaticData_Tool>("CanMergeData on InventorySlot_Tool");
-		if (StaticData.InternalSlotRestrictions.Contains(OtherStaticData.Subtype)) {
+		//if (StaticData.InternalSlotRestrictions.Contains(OtherStaticData.SubTypeID)) {
 			return true;
-		}
+		//}
 	}
 	return false;
 }
@@ -142,7 +142,7 @@ bool UInventorySlotData_Tool::MergeData(UInventorySlotData_Basic* OtherSlot, int
 		FItemStaticData_Tool StaticData = *GetStaticDataHandle().GetRow<FItemStaticData_Tool>("CanMergeData on InventorySlot_Tool");
 		FItemStaticData_Stack OtherStaticData = *OtherSlot->GetStaticDataHandle().GetRow<FItemStaticData_Stack>("CanMergeData on InventorySlot_Tool");
 		for (int i = 0; i < InternalSlots.Num(); i++) {
-			if (StaticData.InternalSlotRestrictions[i].Contains(OtherStaticData.Subtype)) {
+			//if (StaticData.InternalSlotRestrictions.Contains(OtherStaticData.SubTypeID)) {
 				//UInventoryManager* MyManager = Cast<UInventoryManager>(GetOuter());
 				UInventoryManager* OtherManager = Cast<UInventoryManager>(OtherSlot->GetOuter());
 				OtherManager->SetSlot(OtherManager->GetIndex(OtherSlot), InternalSlots[i]);
@@ -150,16 +150,16 @@ bool UInventorySlotData_Tool::MergeData(UInventorySlotData_Basic* OtherSlot, int
 				InternalSlots[i]->Rename(nullptr, this);
 				HasMerged = true;
 				//if (!IsValid(AmmoSlotRef)) {
-					if (StaticData.InternalSlotRestrictions[i].Contains(StaticData.AmmoSubtype)) {
+					//if (StaticData.InternalSlotRestrictions[i].Contains(StaticData.AmmoSubtype)) {
 						if (IsValid(InternalSlots[i])) {
 							AmmoSlotRef = Cast<UInventorySlotData_Stack>(InternalSlots[i]);
 						}
 						else {
 							AmmoSlotRef = nullptr;
 						}
-					}
+					//}
 				//}
-			}
+			//}
 		}
 		return HasMerged;
 	}
@@ -194,7 +194,7 @@ UInventorySlotData_Tool* UInventorySlotData_Tool::CreateNewSlotFromHandle(const 
 	if (Handle.IsNull() || !IsValid(NewOuter)) { return nullptr; }
 	FItemStaticData_Tool StaticData = *Handle.GetRow<FItemStaticData_Tool>("");
 	if (FItemStaticData_Tool::IsValid(StaticData)) {
-		UInventorySlotData_Tool* NewSlot = NewObject<UInventorySlotData_Tool>(NewOuter, StaticData.InstancedDataClass);
+		UInventorySlotData_Tool* NewSlot = NewObject<UInventorySlotData_Tool>(NewOuter, (StaticData.BasicData.InstancedDataClass != nullptr ? StaticData.BasicData.InstancedDataClass : UInventorySlotData_Tool::StaticClass()));
 		NewSlot->SetStaticDataHandle(Handle);
 		return NewSlot;
 	}

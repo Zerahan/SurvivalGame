@@ -27,9 +27,14 @@ ADroppedItem_Tool::ADroppedItem_Tool()
 void ADroppedItem_Tool::BeginPlay()
 {
 	if (ItemDataBuilder.IsValid()) {
-		UInventorySlotData_Tool* NewSlot = NewObject<UInventorySlotData_Tool>(this, ItemDataBuilder.StaticDataHandle.GetRow<FItemStaticData_Tool>("Creating new Slot Object for Inventory")->InstancedDataClass);
-		//NewSlot->SetFromData(ItemDataBuilder);
-		SetItemSlot(NewSlot);
+		FItemStaticData_Tool LoadedStaticData = *ItemDataBuilder.StaticDataHandle.GetRow<FItemStaticData_Tool>("Getting ItemStaticData for tool builder...");
+		if (FItemStaticData_Tool::IsValid(LoadedStaticData)) {
+			UInventorySlotData_Tool* NewSlot = NewObject<UInventorySlotData_Tool>(this, (LoadedStaticData.BasicData.InstancedDataClass != nullptr ? LoadedStaticData.BasicData.InstancedDataClass : UInventorySlotData_Tool::StaticClass()));
+			if (NewSlot) {
+				NewSlot->SetFromData(ItemDataBuilder);
+				SetItemSlot(NewSlot);
+			}
+		}
 	}
 
 	Super::BeginPlay();

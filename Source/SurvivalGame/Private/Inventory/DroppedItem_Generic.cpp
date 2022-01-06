@@ -44,9 +44,9 @@ ADroppedItem_Generic::ADroppedItem_Generic()
 void ADroppedItem_Generic::BeginPlay()
 {
 	if (ItemDataBuilder.IsValid()) {
-		FItemStaticData_Stack LoadedStaticData = *ItemDataBuilder.StaticDataHandle.GetRow<FItemStaticData_Stack>("Creating new Slot Object for Inventory");
-		if ( FItemStaticData_Stack::IsValid(LoadedStaticData) ) {
-			UInventorySlotData_Stack* NewSlot = NewObject<UInventorySlotData_Stack>(this, LoadedStaticData.InstancedDataClass);
+		FItemStaticData_Stack LoadedStaticData = *ItemDataBuilder.StaticDataHandle.GetRow<FItemStaticData_Stack>("Getting ItemStaticData for stack builder");
+		if ( FItemStaticData_Stack::IsValid(LoadedStaticData)) {
+			UInventorySlotData_Stack* NewSlot = NewObject<UInventorySlotData_Stack>(this, (LoadedStaticData.BasicData.InstancedDataClass != nullptr ? LoadedStaticData.BasicData.InstancedDataClass : UInventorySlotData_Stack::StaticClass()));
 			if (NewSlot) {
 				NewSlot->SetFromData(ItemDataBuilder);
 				SetItemSlot(NewSlot);

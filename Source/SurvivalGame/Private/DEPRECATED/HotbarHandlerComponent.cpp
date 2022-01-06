@@ -81,12 +81,12 @@ void UHotbarHandlerComponent::EquipItem()
 				if (IsValid(SpawnedToolRefs[SelectedIndex]) && IsValid(AttachmentRef)) {
 					SpawnedToolRefs[SelectedIndex]->AttachToComponent(AttachmentRef, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false), AttachmentSocket);
 					SpawnedToolRefs[SelectedIndex]->SetActorRelativeTransform(SpawnedToolRefs[SelectedIndex]->GetAttachmentTransform());
-					if (IsValid(SelectedItemData.InstancedDataRef)) {
+					//if (IsValid(SelectedItemData.InstancedDataRef)) {
 						SpawnedToolRefs[SelectedIndex]->Initialize(InventorySlotIndex, SelectedItemData.InstancedDataRef);
-					}
-					else {
+					//}
+					//else {
 						SpawnedToolRefs[SelectedIndex]->Initialize(InventorySlotIndex, nullptr);
-					}
+					//}
 				}
 			}
 		}

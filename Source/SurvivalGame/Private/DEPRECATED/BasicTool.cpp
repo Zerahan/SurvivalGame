@@ -7,7 +7,9 @@
 #include "DEPRECATED/InventoryComponent.h"
 #include "Utility/UtilityFunctionLibrary.h"
 
-#define Debug(str) UUtilityFunctionLibrary::PrintDebug(str);
+//#ifndef Debug
+//#define Debug(str) UUtilityFunctionLibrary::PrintDebug(str);
+//#endif
 
 // Sets default values
 ABasicTool::ABasicTool()
