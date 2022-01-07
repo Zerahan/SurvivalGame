@@ -17,7 +17,7 @@ class ADroppedItem_Basic;
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(FOnInventoryManagerSlotChangedDispatcher, UInventoryManager, OnInventoryManagerSlotChangedDispatcher, int32, TargetSlot);
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FOnLinkedInventoryChangedDispatcher, UInventoryManager, OnLinkedInventoryChangedDispatcher);
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SURVIVALGAME_API UInventoryManager : public UActorComponent
 {
 	GENERATED_BODY()
@@ -53,12 +53,15 @@ private:
 	*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory", meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UInventorySlotData_Basic>> AllowedItemTypes;
-
+	
 	/**
 	* Allows transfers between this inventory and another. Specifically useful for chests and other storage mediums seperate from the player. Should only allow a server to set this variable.
 	*/
 	UPROPERTY()
 	UInventoryManager* LinkedInventoryRef;
+
+	UPROPERTY(VisibleAnywhere, Category = "Default|Inventory", meta = (AllowPrivateAccess = "true"))
+	APlayerController* OwningPlayerRef;
 
 	/**
 	* Does the actual operation for AddToSlot. Assumes incoming data is valid.
@@ -310,6 +313,13 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	ADroppedItem_Basic* CreateDroppedItem(const TSubclassOf<ADroppedItem_Basic> SpawnedClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
+	APlayerController* GetOwningPlayer();
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Default|Inventory")
+	void OnInventoryManagerSlotChanged(const int32 TargetSlot);
+	virtual void OnInventoryManagerSlotChanged_Implementation(const int32 TargetSlot);
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Default|Inventory")
 	FOnInventoryManagerSlotChangedDispatcher OnInventoryManagerSlotChangedDispatcher;

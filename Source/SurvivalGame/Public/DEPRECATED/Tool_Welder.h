@@ -18,7 +18,6 @@ public:
 	ATool_Welder();
 
 public:
-
 	virtual bool CanPrimaryAction_Implementation() const override;
 	virtual bool CanSecondaryAction_Implementation() const override;
 	virtual bool CanReloadAction_Implementation() const override;

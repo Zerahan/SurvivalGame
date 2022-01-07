@@ -69,7 +69,7 @@ protected:
 	UInventoryManager* InventoryRef;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
-	int32 InventorySlotIndex;
+	UInventorySlotData_Tool* ToolDataRef;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Default|Tool")
@@ -132,7 +132,7 @@ public:
 	virtual void OnUnequip_Implementation(APlayerController* ControllerRef_, const bool ShouldDestroyActor = false);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Tool")
-	void Initialize(const int32 SlotIndex, const UInventorySlotData_Tool* ItemInstanceData_);
-	virtual void Initialize_Implementation(const int32 SlotIndex, const UInventorySlotData_Tool* ItemInstanceData_);
+	void Initialize(UInventorySlotData_Tool* ItemInstanceData_);
+	virtual void Initialize_Implementation(UInventorySlotData_Tool* ItemInstanceData_);
 	
 };

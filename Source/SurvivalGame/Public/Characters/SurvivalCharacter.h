@@ -100,6 +100,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Inventory")
 	UHotbarManager* HotbarManagerRef;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default|Inventory", meta = (BlueprintProtected))
+	TSubclassOf<UInventoryManager> InventoryManagerClass;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default|Inventory", meta = (BlueprintProtected))
+	TSubclassOf<UHotbarManager> HotbarManagerClass;
+
 	FInteractionInfo LastInteractionInfo;
 	AActor* LastInteractionActorRef;
 

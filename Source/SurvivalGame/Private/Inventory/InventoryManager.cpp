@@ -114,7 +114,7 @@ void UInventoryManager::SetSlot(const int32 TargetSlot, UInventorySlotData_Basic
 				// Changes the outer of the incoming slot to be this component
 				InventorySlots[TargetSlot]->Rename(nullptr, this);
 			}
-			OnInventoryManagerSlotChangedDispatcher.Broadcast(TargetSlot);
+			OnInventoryManagerSlotChanged(TargetSlot);
 		}
 	}
 }
@@ -228,7 +228,7 @@ bool UInventoryManager::AddToSlot_Internal(const int32 TargetSlot, const FItemDa
 		NewSlot->AddData(SimpleData, Remainder);
 	}
 	if (SimpleData.Amount != Remainder.Amount) {
-		OnInventoryManagerSlotChangedDispatcher.Broadcast(TargetSlot);
+		OnInventoryManagerSlotChanged(TargetSlot);
 	}
 	return Remainder.Amount > 0;
 }
@@ -257,7 +257,7 @@ bool UInventoryManager::RemoveFromSlot_Internal(const int32 TargetSlot, const FI
 		Remainder = SimpleData;
 	}
 	if (SimpleData.Amount != Remainder.Amount) {
-		OnInventoryManagerSlotChangedDispatcher.Broadcast(TargetSlot);
+		OnInventoryManagerSlotChanged(TargetSlot);
 	}
 	return Remainder.Amount > 0;
 }
@@ -277,7 +277,7 @@ bool UInventoryManager::MergeToSlot(const int32 TargetSlot, UInventorySlotData_B
 		if (FoundSlot->ShouldDestroyObject()) {
 			FoundSlot->ConditionalBeginDestroy();
 		}
-		OnInventoryManagerSlotChangedDispatcher.Broadcast(TargetSlot);
+		OnInventoryManagerSlotChanged(TargetSlot);
 		return true;
 	}
 	return false;
@@ -518,4 +518,20 @@ ADroppedItem_Basic* UInventoryManager::CreateDroppedItem(const TSubclassOf<ADrop
 	}
 
 	return SpawnedObject;
+}
+
+APlayerController* UInventoryManager::GetOwningPlayer()
+{
+	if(IsValid(OwningPlayerRef)) return OwningPlayerRef;
+
+	APawn* OwningPawn = Cast<APawn>(GetOwner());
+	if (OwningPawn) {
+		OwningPlayerRef = Cast<APlayerController>(OwningPawn->GetController());
+	}
+	return OwningPlayerRef;
+}
+
+void UInventoryManager::OnInventoryManagerSlotChanged_Implementation(const int32 TargetSlot)
+{
+	OnInventoryManagerSlotChangedDispatcher.Broadcast(TargetSlot);
 }

@@ -25,7 +25,6 @@ AItemTool_Basic::AItemTool_Basic()
 	SecondaryActionRate = 0.1f;
 	IsTertiaryActionAutomated = false;
 	TertiaryActionRate = 0.1f;
-	InventorySlotIndex = 0;
 }
 
 inline void AItemTool_Basic::SetIsEquipped(const bool NewIsEquipped) { IsEquipped = NewIsEquipped; }
@@ -144,7 +143,7 @@ void AItemTool_Basic::OnUnequip_Implementation(APlayerController* ControllerRef_
 	}
 }
 
-void AItemTool_Basic::Initialize_Implementation(const int32 SlotIndex, const UInventorySlotData_Tool* ItemInstanceData_)
+void AItemTool_Basic::Initialize_Implementation(UInventorySlotData_Tool* ItemInstanceData_)
 {
-	InventorySlotIndex = SlotIndex;
+	ToolDataRef = ItemInstanceData_;
 }
