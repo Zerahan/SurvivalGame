@@ -21,7 +21,7 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SURVIVALGAME_API UInventoryManager : public UActorComponent
 {
 	GENERATED_BODY()
-		
+	
 private:
 	/**
 	* Inventory's name. Ex: Backpack
@@ -82,6 +82,12 @@ public:
 	*/
 	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Default|Inventory")
 	USceneComponent* SpawnPointComponentRef;
+
+	/**
+	* SpawnPointComponentRef is not set, spawns dropped items at this relative location
+	*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
+	FVector SpawnPointRef;
 
 protected:
 	// Called when the game starts

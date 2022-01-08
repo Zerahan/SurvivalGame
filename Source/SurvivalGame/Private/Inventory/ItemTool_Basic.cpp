@@ -15,20 +15,22 @@ AItemTool_Basic::AItemTool_Basic()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	IsEquipped = false;
+	IsEquipped					= false;
 
-	ToolName = "Hands";
-	AttachmentTransform = FTransform();
-	IsPrimaryActionAutomated = false;
-	PrimaryActionRate = 0.1f;
-	IsSecondaryActionAutomated = false;
-	SecondaryActionRate = 0.1f;
-	IsTertiaryActionAutomated = false;
-	TertiaryActionRate = 0.1f;
+	ToolName					= "Hands";
+	HoldAnimation				= EHoldingAnimation::Hands;
+	AttachmentTransform			= FTransform();
+	IsPrimaryActionAutomated	= false;
+	PrimaryActionRate			= 0.1f;
+	IsSecondaryActionAutomated	= false;
+	SecondaryActionRate			= 0.1f;
+	IsTertiaryActionAutomated	= false;
+	TertiaryActionRate			= 0.1f;
 }
 
 inline void AItemTool_Basic::SetIsEquipped(const bool NewIsEquipped) { IsEquipped = NewIsEquipped; }
 inline bool AItemTool_Basic::GetIsEquipped() const { return IsEquipped; }
+inline EHoldingAnimation AItemTool_Basic::GetHoldType() const { return HoldAnimation; }
 inline FTransform AItemTool_Basic::GetAttachmentTransform() const { return AttachmentTransform; }
 inline ASurvivalCharacter* AItemTool_Basic::GetOwningCharacter() const { return OwningCharacterRef; }
 
@@ -38,12 +40,12 @@ inline bool AItemTool_Basic::CanTertiaryAction_Implementation() const { return t
 
 void AItemTool_Basic::SetupPlayerInputComponent()
 {
-	InputComponent->BindAction("PrimaryAction", IE_Pressed, this, &AItemTool_Basic::OnPrimaryAction_Start);
-	InputComponent->BindAction("PrimaryAction", IE_Released, this, &AItemTool_Basic::OnPrimaryAction_End);
-	InputComponent->BindAction("SecondaryAction", IE_Pressed, this, &AItemTool_Basic::OnSecondaryAction_Start);
+	InputComponent->BindAction("PrimaryAction",   IE_Pressed,  this, &AItemTool_Basic::OnPrimaryAction_Start);
+	InputComponent->BindAction("PrimaryAction",   IE_Released, this, &AItemTool_Basic::OnPrimaryAction_End);
+	InputComponent->BindAction("SecondaryAction", IE_Pressed,  this, &AItemTool_Basic::OnSecondaryAction_Start);
 	InputComponent->BindAction("SecondaryAction", IE_Released, this, &AItemTool_Basic::OnSecondaryAction_End);
-	InputComponent->BindAction("TertiaryAction", IE_Pressed, this, &AItemTool_Basic::OnTertiaryAction_Start);
-	InputComponent->BindAction("TertiaryAction", IE_Released, this, &AItemTool_Basic::OnTertiaryAction_End);
+	InputComponent->BindAction("TertiaryAction",  IE_Pressed,  this, &AItemTool_Basic::OnTertiaryAction_Start);
+	InputComponent->BindAction("TertiaryAction",  IE_Released, this, &AItemTool_Basic::OnTertiaryAction_End);
 }
 
 void AItemTool_Basic::SetOwningCharacter(ASurvivalCharacter* NewOwningCharacterRef)
@@ -56,7 +58,7 @@ void AItemTool_Basic::SetOwningCharacter(ASurvivalCharacter* NewOwningCharacterR
 
 void AItemTool_Basic::OnPrimaryAction_Implementation()
 {
-	Debug("Jazz hands!");
+	Debug(GetName() + ": Jazz hands!");
 	//UUtilityFunctionLibrary::PrintDebug("Jazz hands!");
 }
 
@@ -78,7 +80,7 @@ void AItemTool_Basic::OnPrimaryAction_End()
 
 void AItemTool_Basic::OnSecondaryAction_Implementation()
 {
-	Debug("Second jazz hands!");
+	Debug(GetName() + ": Second jazz hands!");
 	//UUtilityFunctionLibrary::PrintDebug("Second jazz hands!");
 }
 
@@ -101,7 +103,7 @@ void AItemTool_Basic::OnSecondaryAction_End()
 
 void AItemTool_Basic::OnTertiaryAction_Implementation()
 {
-	UUtilityFunctionLibrary::PrintDebug("Third jazz hands!");
+	Debug(GetName() + ": Third jazz hands!");
 }
 
 void AItemTool_Basic::OnTertiaryAction_Start()
@@ -137,6 +139,7 @@ void AItemTool_Basic::OnUnequip_Implementation(APlayerController* ControllerRef_
 	if (GetIsEquipped()) {
 		IsEquipped = false;
 		DisableInput(ControllerRef_);
+		InputComponent->ClearActionBindings();
 	}
 	if (ShouldDestroyActor) {
 		Destroy();
@@ -145,5 +148,6 @@ void AItemTool_Basic::OnUnequip_Implementation(APlayerController* ControllerRef_
 
 void AItemTool_Basic::Initialize_Implementation(UInventorySlotData_Tool* ItemInstanceData_)
 {
-	ToolDataRef = ItemInstanceData_;
+	ToolDataRef			= ItemInstanceData_;
+	ToolStaticDataRef	= UInventorySlotData_Tool::LookupStaticData(ToolDataRef);
 }

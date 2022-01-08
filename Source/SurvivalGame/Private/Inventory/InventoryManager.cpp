@@ -68,7 +68,7 @@ FVector UInventoryManager::GetWorldSpawnLocation() const
 	if (IsValid(SpawnPointComponentRef)) {
 		return SpawnPointComponentRef->GetComponentLocation();
 	}
-	return GetOwner()->GetActorLocation();
+	return GetOwner()->GetActorLocation() + GetOwner()->GetActorRotation().RotateVector(SpawnPointRef);
 }
 
 FRotator UInventoryManager::GetWorldSpawnRotation() const

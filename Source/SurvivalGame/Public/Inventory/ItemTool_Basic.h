@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Inventory/Item_Basic.h"
+#include "Inventory/InventorySlotData_Tool.h"
 #include "ItemTool_Basic.generated.h"
 
 class ASurvivalCharacter;
@@ -35,34 +36,37 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Default|Tool", meta = (BlueprintProtected))
 	FName ToolName;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default|Control", meta = (BlueprintProtected))
 	FTransform AttachmentTransform;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default|Control", meta = (BlueprintProtected))
+	EHoldingAnimation HoldAnimation;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control", meta = (BlueprintProtected))
 	bool IsPrimaryActionAutomated;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control", meta = (BlueprintProtected))
 	float PrimaryActionRate;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control", meta = (BlueprintProtected))
 	bool IsSecondaryActionAutomated;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control", meta = (BlueprintProtected))
 	float SecondaryActionRate;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control", meta = (BlueprintProtected))
 	bool IsTertiaryActionAutomated;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Control", meta = (BlueprintProtected))
 	float TertiaryActionRate;
 
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control", meta = (BlueprintProtected))
 	FTimerHandle PrimaryTimerHandle;
 
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control", meta = (BlueprintProtected))
 	FTimerHandle SecondaryTimerHandle;
 
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control", meta = (BlueprintProtected))
 	FTimerHandle TertiaryTimerHandle;
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
@@ -71,12 +75,18 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
 	UInventorySlotData_Tool* ToolDataRef;
 
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Control|Hotbar", meta = (BlueprintProtected))
+	FItemStaticData_Tool ToolStaticDataRef;
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "Default|Tool")
 	void SetIsEquipped(const bool NewIsEquipped);
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Tool")
 	bool GetIsEquipped() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Default|Animation")
+	EHoldingAnimation GetHoldType() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Tool")
 	FTransform GetAttachmentTransform() const;

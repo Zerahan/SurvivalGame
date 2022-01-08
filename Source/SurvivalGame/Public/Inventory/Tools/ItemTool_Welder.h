@@ -13,5 +13,12 @@ UCLASS(Blueprintable, ClassGroup = (Custom))
 class SURVIVALGAME_API AItemTool_Welder : public AItemTool_Basic
 {
 	GENERATED_BODY()
-	
+
+public:
+	AItemTool_Welder();
+
+public:
+	virtual void OnPrimaryAction_Implementation() override;
+	virtual bool CanSecondaryAction_Implementation() const override;
+	virtual bool CanTertiaryAction_Implementation() const override;
 };

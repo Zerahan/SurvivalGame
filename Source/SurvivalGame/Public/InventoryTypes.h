@@ -14,7 +14,20 @@ class UInventorySlotData_Basic;
 class UBasicItemData;
 //class UInventoryComponent;
 
-UENUM(BlueprintType)//, 
+UENUM(BlueprintType)
+enum class EHoldingAnimation : uint8
+{
+	None		UMETA(DisplayName = "None"),
+	Hands		UMETA(DisplayName = "Hands"),
+	Carry1H		UMETA(DisplayName = "One Handed Carry"),
+	Carry2H		UMETA(DisplayName = "Two Handed Carry"),
+	Ranged1H	UMETA(DisplayName = "One Handed Ranged"),
+	Ranged2H	UMETA(DisplayName = "Two Handed Ranged"),
+	Melee1H		UMETA(DisplayName = "One Handed Melee"),
+	Melee2H		UMETA(DisplayName = "Two Handed Melee"),
+};
+
+UENUM(BlueprintType)
 enum class EItemType : uint8
 {
 	None			UMETA(DisplayName = "None"),

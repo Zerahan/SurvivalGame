@@ -4,6 +4,9 @@
 #include "Inventory/HotbarManager.h"
 #include "Inventory/InventorySlotData_Tool.h"
 #include "Inventory/ItemTool_Basic.h"
+#include "Utility/UtilityFunctionLibrary.h"
+
+#define Debug(str) UUtilityFunctionLibrary::PrintDebug(str);
 
 UHotbarManager::UHotbarManager()
 	:Super()
@@ -34,6 +37,7 @@ void UHotbarManager::BeginPlay()
 		}
 		HandEquipment = SpawnedObject;
 	}
+
 	for (int i = 0; i < GetInventorySize(); i++) {
 		UInventorySlotData_Tool* SlotData = Cast<UInventorySlotData_Tool>(GetSlot(i));
 		if (IsValid(SlotData)) {
@@ -58,6 +62,12 @@ void UHotbarManager::BeginPlay()
 				}
 			}
 		}
+	}
+
+	if (SpawnedEquipment.IsValidIndex(SelectedIndex) && IsValid(SpawnedEquipment[SelectedIndex])) {
+		SpawnedEquipment[SelectedIndex]->OnEquip(GetOwningPlayer());
+	} else {
+		HandEquipment->OnEquip(GetOwningPlayer());
 	}
 }
 
