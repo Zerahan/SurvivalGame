@@ -12,10 +12,10 @@ AItemTool_Welder::AItemTool_Welder()
 
 }
 
-void AItemTool_Welder::OnPrimaryAction_Implementation()
-{
-	Debug(GetName() + ": Welding!");
-}
+//void AItemTool_Welder::OnPrimaryAction_Implementation()
+//{
+//	Debug(GetName() + ": Welding!");
+//}
 
 bool AItemTool_Welder::CanSecondaryAction_Implementation() const
 {

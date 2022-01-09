@@ -325,14 +325,14 @@ void ASurvivalCharacter::TrySprinting_Implementation()
 void ASurvivalCharacter::OnScrollUp_Implementation()
 {
 	if (IsValid(HotbarManagerRef)) {
-		HotbarManagerRef->SelectPreviousItem();
+		HotbarManagerRef->SelectNextItem();
 	}
 }
 
 void ASurvivalCharacter::OnScrollDown_Implementation()
 {
 	if (IsValid(HotbarManagerRef)) {
-		HotbarManagerRef->SelectNextItem();
+		HotbarManagerRef->SelectPreviousItem();
 	}
 }
 

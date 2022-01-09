@@ -18,7 +18,7 @@ public:
 	AItemTool_Welder();
 
 public:
-	virtual void OnPrimaryAction_Implementation() override;
+	//virtual void OnPrimaryAction_Implementation() override;
 	virtual bool CanSecondaryAction_Implementation() const override;
 	virtual bool CanTertiaryAction_Implementation() const override;
 };

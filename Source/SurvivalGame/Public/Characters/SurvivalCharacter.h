@@ -18,7 +18,7 @@ class UHotbarManager;
 class USpringArmComponent;
 class UInventoryHUDWidget;
 
-UCLASS(BlueprintType, Blueprintable, ClassGroup = (Custom))
+UCLASS(Blueprintable, ClassGroup = (Custom))
 class SURVIVALGAME_API ASurvivalCharacter : public ACharacter
 {
 	GENERATED_BODY()
