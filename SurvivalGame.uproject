@@ -12,7 +12,8 @@
 				"Engine",
 				"CoreUObject",
 				"UMG",
-				"AIModule"
+				"AIModule",
+				"InventorySystem"
 			]
 		},
 		{
@@ -23,7 +24,7 @@
 				"Engine",
 				"CoreUObject",
 				"UMG",
-				"InteractionSystem",
+				"InteractionSystem"
 			]
 		},
 		{
@@ -33,7 +34,7 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"CoreUObject",
-				"UMG",
+				"UMG"
 			]
 		},
 		{
