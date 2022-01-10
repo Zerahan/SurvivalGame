@@ -26,6 +26,7 @@ void UHotbarManager::BeginPlay()
 	SpawnedObject = GetWorld()->SpawnActor<AItemTool_Basic>(AItemTool_Basic::StaticClass(), GetWorldSpawnLocation(), GetWorldSpawnRotation(), SpawnInfo);
 	if (IsValid(SpawnedObject)) {
 		SpawnedObject->Initialize(HandSlotData);
+		SpawnedObject->SetActorHiddenInGame(true);
 		if (IsValid(GetToolAttachmentComponent())) {
 			SpawnedObject->AttachToComponent(GetToolAttachmentComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GetToolAttachmentSocket());
 		}
@@ -45,6 +46,7 @@ void UHotbarManager::BeginPlay()
 					SpawnedObject = GetWorld()->SpawnActor<AItemTool_Basic>(StaticData.EquippedClass, GetWorldSpawnLocation(), GetWorldSpawnRotation(), SpawnInfo);
 					if (IsValid(SpawnedObject)) {
 						SpawnedObject->Initialize(SlotData);
+						SpawnedObject->SetActorHiddenInGame(true);
 						if (IsValid(GetToolAttachmentComponent())) {
 							SpawnedObject->AttachToComponent(GetToolAttachmentComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GetToolAttachmentSocket());
 						}
@@ -175,6 +177,7 @@ void UHotbarManager::OnInventoryManagerSlotChanged_Implementation(const int32 Ta
 		SpawnedObject = GetWorld()->SpawnActor<AItemTool_Basic>(NewDataClass, GetWorldSpawnLocation(), GetWorldSpawnRotation(), SpawnInfo);
 		if (IsValid(SpawnedObject)) {
 			SpawnedObject->Initialize(SlotData);
+			SpawnedObject->SetActorHiddenInGame(true);
 			if (IsValid(GetToolAttachmentComponent())) {
 				SpawnedObject->AttachToComponent(GetToolAttachmentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, GetToolAttachmentSocket());
 				Debug("Attaching to Component");
