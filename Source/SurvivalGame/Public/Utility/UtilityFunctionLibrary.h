@@ -7,6 +7,10 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "UtilityFunctionLibrary.generated.h"
 
+#ifndef Debug
+#define Debug(str) UUtilityFunctionLibrary::PrintDebug(str);
+#endif
+
 /**
  * 
  */

@@ -6,6 +6,8 @@ Saved
 Content/Packages/*/*
 !Content/Packages/**/.keep
 Source/*/*
+!Source/InteractionSystem/*
+!Source/InventorySystem/*
 !Source/SurvivalGame/*
 !Source/SurvivalGameEditor/*
 !Source/*/.keep

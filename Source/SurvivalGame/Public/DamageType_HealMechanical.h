@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "GameFramework/DamageType.h"
 #include "DamageType_HealMechanical.generated.h"
 

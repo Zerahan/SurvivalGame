@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "Engine/DataAsset.h"
 #include "WorldMap_Asset.generated.h"
 

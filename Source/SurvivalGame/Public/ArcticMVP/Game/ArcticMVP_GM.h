@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "GameFramework/GameModeBase.h"
 #include "ArcticMVP_GM.generated.h"
 

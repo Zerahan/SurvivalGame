@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "Characters/SurvivalAIPawn.h"
 #include "SecurityCamera_Basic.generated.h"
 

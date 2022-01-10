@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Characters/SurvivalCharacter.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -14,9 +13,8 @@
 #include "Inventory/InventoryManager.h"
 #include "Inventory/HotbarManager.h"
 #include "Interfaces/InteractionInterface.h"
-#include "UI/Inventory/InventoryHUDWidget.h"
-#include "Utility/UtilityFunctionLibrary.h"
-#include "DEPRECATED/BasicTool.h"
+#include "Inventory/UI/InventoryHUDWidget.h"
+//#include "DEPRECATED/BasicTool.h"
 
 // Sets default values
 ASurvivalCharacter::ASurvivalCharacter()
@@ -60,7 +58,9 @@ ASurvivalCharacter::ASurvivalCharacter()
 	
 	Mesh_FirstPerson = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh_FirstPerson"));
 	Mesh_FirstPerson->SetSkeletalMesh(meshObject.Object);
-	Mesh_FirstPerson->SetAnimInstanceClass(AnimationObject.Object->GeneratedClass);
+	if (AnimationObject.Succeeded()) {
+		Mesh_FirstPerson->SetAnimInstanceClass(AnimationObject.Object->GeneratedClass);
+	}
 	Mesh_FirstPerson->SetOnlyOwnerSee(true);
 	Mesh_FirstPerson->SetOwnerNoSee(false);
 	Mesh_FirstPerson->SetupAttachment(GetCapsuleComponent());
@@ -98,7 +98,7 @@ ASurvivalCharacter::ASurvivalCharacter()
 
 	HotbarManagerRef = CreateDefaultSubobject<UHotbarManager>(TEXT("Hotbar Manager"));
 	HotbarManagerRef->SetDisplayName("Hotbar");
-	HotbarManagerRef->SetInventorySize(4);
+	HotbarManagerRef->SetInventorySize(3);
 
 	//if (!InventoryHUDWidgetClass) {
 		ConstructorHelpers::FClassFinder<UInventoryHUDWidget> WidgetClass (TEXT("/Game/GameCore/Dev/UI/HUD_InventoryMenu")); 
@@ -120,11 +120,11 @@ void ASurvivalCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	APlayerController* LocalControllerRef = Cast<APlayerController>(Controller);
-	//UUtilityFunctionLibrary::PrintDebug("Getting controller...");
+	//Debug("Getting controller...");
 
 	/*
 	if (LocalControllerRef) {
-		//UUtilityFunctionLibrary::PrintDebug("Making widget...");
+		//Debug("Making widget...");
 		InventoryHUDWidget = CreateWidget<UInventoryHUDWidget>(LocalControllerRef, InventoryHUDWidgetClass, "InventoryWidgetRef");
 		//InventoryHUDWidget->SetOwningPlayer(LocalControllerRef);
 		InventoryHUDWidget->SetInventoryRef(InventoryManagerRef);
@@ -170,7 +170,6 @@ void ASurvivalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ASurvivalCharacter::StartSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASurvivalCharacter::StopSprinting);
-	
 	
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASurvivalCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASurvivalCharacter::MoveRight);
@@ -243,7 +242,7 @@ void ASurvivalCharacter::OnOpenInventory_Implementation()
 			Interface->Execute_ToggleMenu(InventoryHUDWidget);
 		}
 	}
-	//UUtilityFunctionLibrary::PrintDebug(str + ">");
+	//Debug(str + ">");
 }
 
 void ASurvivalCharacter::OnUse_Implementation()
@@ -253,13 +252,13 @@ void ASurvivalCharacter::OnUse_Implementation()
 		if (Result.Distance > UseDistance) { return; }
 		AActor* HitActor = Result.GetActor();
 		if (IsValid(HitActor)) {
-			//UUtilityFunctionLibrary::PrintDebug("Hit: " + HitActor->GetFName().ToString());
+			//Debug("Hit: " + HitActor->GetFName().ToString());
 			LastInteractionActorRef = Result.GetActor();
 			LastInteractionInfo.ControllerRef = GetController();
 			LastInteractionInfo.HitComponent = Result.GetComponent();
 			IInteractionInterface* Interface = Cast<IInteractionInterface>(HitActor);
 			if(Interface) {
-				//UUtilityFunctionLibrary::PrintDebug(" - Has Interface");
+				//Debug(" - Has Interface");
 				if (Interface->Execute_CanInteract(HitActor, LastInteractionInfo)) {
 					Interface->Execute_BeginInteraction(HitActor, LastInteractionInfo);
 				}
@@ -325,14 +324,14 @@ void ASurvivalCharacter::TrySprinting_Implementation()
 void ASurvivalCharacter::OnScrollUp_Implementation()
 {
 	if (IsValid(HotbarManagerRef)) {
-		HotbarManagerRef->SelectPreviousItem();
+		HotbarManagerRef->SelectNextItem();
 	}
 }
 
 void ASurvivalCharacter::OnScrollDown_Implementation()
 {
 	if (IsValid(HotbarManagerRef)) {
-		HotbarManagerRef->SelectNextItem();
+		HotbarManagerRef->SelectPreviousItem();
 	}
 }
 

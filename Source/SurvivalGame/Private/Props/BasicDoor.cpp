@@ -3,7 +3,6 @@
 
 #include "Props/BasicDoor.h"
 #include "DamageType_HealMechanical.h"
-#include "Utility/UtilityFunctionLibrary.h"
 
 // Sets default values
 ABasicDoor::ABasicDoor()
@@ -78,7 +77,6 @@ float ABasicDoor::TakeDamage(float DamageAmount, FDamageEvent const & DamageEven
 			OnRepairDoor();
 		}
 	}
-	//UUtilityFunctionLibrary::PrintDebug("Damaged! " + FString::SanitizeFloat(DamageAmount) + "(" + FString::SanitizeFloat(StatusHealth) + "/" + FString::SanitizeFloat(StatusHealth_MAX) + ")");
 	return DamageAmount;
 }
 

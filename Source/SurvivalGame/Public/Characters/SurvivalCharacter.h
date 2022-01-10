@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/InteractionInterface.h"
 #include "SurvivalCharacter.generated.h"
@@ -18,7 +18,7 @@ class UHotbarManager;
 class USpringArmComponent;
 class UInventoryHUDWidget;
 
-UCLASS(BlueprintType, Blueprintable, ClassGroup = (Custom))
+UCLASS(Blueprintable, ClassGroup = (Custom))
 class SURVIVALGAME_API ASurvivalCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -99,6 +99,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Default|Inventory")
 	UHotbarManager* HotbarManagerRef;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default|Inventory", meta = (BlueprintProtected))
+	TSubclassOf<UInventoryManager> InventoryManagerClass;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default|Inventory", meta = (BlueprintProtected))
+	TSubclassOf<UHotbarManager> HotbarManagerClass;
 
 	FInteractionInfo LastInteractionInfo;
 	AActor* LastInteractionActorRef;

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "Engine/DataTable.h"
 #include "WeaponTypes.generated.h"
 

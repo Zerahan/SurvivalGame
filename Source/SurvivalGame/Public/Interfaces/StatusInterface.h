@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "UObject/Interface.h"
 #include "StatusInterface.generated.h"
 

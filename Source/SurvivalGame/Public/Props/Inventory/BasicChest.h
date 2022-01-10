@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "GameFramework/Actor.h"
-#include "InventoryTypes.h"
+#include "Inventory/InventoryTypes.h"
 #include "Interfaces/InteractionInterface.h"
 #include "BasicChest.generated.h"
 
