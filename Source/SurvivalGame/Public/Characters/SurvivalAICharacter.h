@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "GameFramework/Character.h"
 #include "Characters/GameTeams.h"
 #include "Perception/AIPerceptionTypes.h"

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "Engine/NavigationObjectBase.h"
 #include "PatrolNode.generated.h"
 

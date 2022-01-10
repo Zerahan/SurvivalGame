@@ -16,6 +16,27 @@
 			]
 		},
 		{
+			"Name": "InventorySystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"CoreUObject",
+				"UMG",
+				"InteractionSystem",
+			]
+		},
+		{
+			"Name": "InteractionSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"CoreUObject",
+				"UMG",
+			]
+		},
+		{
 			"Name": "SurvivalGameEditor",
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit"

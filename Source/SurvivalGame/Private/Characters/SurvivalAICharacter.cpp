@@ -7,10 +7,6 @@
 #include "Perception/AISenseConfig_Prediction.h"
 #include "Characters/TeamAIController.h"
 #include "Perception/AIPerceptionComponent.h"
-#include "Utility/UtilityFunctionLibrary.h"
-
-//#define DebugC(str, color) (GEngine->AddOnScreenDebugMessage(-1, 5.f, color, str))
-//#define Debug(str) (DebugC(str,FColor::Red))
 
 // Sets default values
 ASurvivalAICharacter::ASurvivalAICharacter()
@@ -99,7 +95,7 @@ void ASurvivalAICharacter::SetSightAngle(const float NewSightAngle)
 
 void ASurvivalAICharacter::OnTargetPerceptionInfoUpdated_Implementation(const FActorPerceptionUpdateInfo& UpdateInfo)
 {
-	UUtilityFunctionLibrary::PrintDebug("Updated...");
+	Debug("Updated...");
 	AActor* StimTarget = nullptr;
 	if (UpdateInfo.Target.IsValid()) {
 		StimTarget = UpdateInfo.Target.Get();
@@ -108,7 +104,7 @@ void ASurvivalAICharacter::OnTargetPerceptionInfoUpdated_Implementation(const FA
 	if (!IsValid(StimTarget)) { return; }
 
 	if (UpdateInfo.Stimulus.IsActive()) {
-		UUtilityFunctionLibrary::PrintDebug("Detected: " + StimTarget->GetFName().ToString());
+		Debug("Detected: %s", *StimTarget->GetName());
 	}
 
 	if (UpdateInfo.Stimulus.IsExpired() || !UpdateInfo.Stimulus.IsValid()) {

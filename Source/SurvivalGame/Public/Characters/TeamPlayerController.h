@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "GameFramework/PlayerController.h"
 #include "GenericTeamAgentInterface.h"
 #include "Characters/GameTeams.h"

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/InteractionInterface.h"
 #include "BasicButton.generated.h"

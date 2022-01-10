@@ -4,7 +4,6 @@
 #include "Props/Inventory/BasicChest.h"
 #include "Components/StaticMeshComponent.h"
 #include "Inventory/InventoryManager.h"
-#include "Utility/UtilityFunctionLibrary.h"
 
 // Sets default values
 ABasicChest::ABasicChest()
@@ -55,7 +54,6 @@ void ABasicChest::BeginInteraction_Implementation(const FInteractionInfo Info)
 	if (IsValid(InventoryRef)) {
 		InventoryRef->SetLinkedInventory(InventoryManager);
 		InventoryManager->SetLinkedInventory(InventoryRef);
-		UUtilityFunctionLibrary::PrintDebug("Chest: " + InventoryManager->GetDisplayName() + " has been linked to " + InventoryRef->GetDisplayName());
 		if (IsValid(InventoryManager->GetLinkedInventory())) {
 			InventoryManager->GetLinkedInventory()->OnLinkedInventoryChangedDispatcher.AddUniqueDynamic(this, &ABasicChest::ForceCancelInteraction);
 		}
@@ -75,7 +73,6 @@ void ABasicChest::CancelInteraction_Implementation(const FInteractionInfo Info)
 		if (InventoryManager->GetLinkedInventory()->OnLinkedInventoryChangedDispatcher.IsAlreadyBound(this, &ABasicChest::ForceCancelInteraction)) {
 			InventoryManager->GetLinkedInventory()->OnLinkedInventoryChangedDispatcher.RemoveDynamic(this, &ABasicChest::ForceCancelInteraction);
 		}
-		UUtilityFunctionLibrary::PrintDebug("Chest: " + InventoryManager->GetDisplayName() + " has been unlinked");
 		InventoryManager->SetLinkedInventory(nullptr);
 	}
 }

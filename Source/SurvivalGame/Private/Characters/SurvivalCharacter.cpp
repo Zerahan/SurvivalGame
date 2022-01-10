@@ -13,9 +13,8 @@
 #include "Inventory/InventoryManager.h"
 #include "Inventory/HotbarManager.h"
 #include "Interfaces/InteractionInterface.h"
-#include "UI/Inventory/InventoryHUDWidget.h"
-#include "Utility/UtilityFunctionLibrary.h"
-#include "DEPRECATED/BasicTool.h"
+#include "Inventory/UI/InventoryHUDWidget.h"
+//#include "DEPRECATED/BasicTool.h"
 
 // Sets default values
 ASurvivalCharacter::ASurvivalCharacter()
@@ -121,11 +120,11 @@ void ASurvivalCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	APlayerController* LocalControllerRef = Cast<APlayerController>(Controller);
-	//UUtilityFunctionLibrary::PrintDebug("Getting controller...");
+	//Debug("Getting controller...");
 
 	/*
 	if (LocalControllerRef) {
-		//UUtilityFunctionLibrary::PrintDebug("Making widget...");
+		//Debug("Making widget...");
 		InventoryHUDWidget = CreateWidget<UInventoryHUDWidget>(LocalControllerRef, InventoryHUDWidgetClass, "InventoryWidgetRef");
 		//InventoryHUDWidget->SetOwningPlayer(LocalControllerRef);
 		InventoryHUDWidget->SetInventoryRef(InventoryManagerRef);
@@ -243,7 +242,7 @@ void ASurvivalCharacter::OnOpenInventory_Implementation()
 			Interface->Execute_ToggleMenu(InventoryHUDWidget);
 		}
 	}
-	//UUtilityFunctionLibrary::PrintDebug(str + ">");
+	//Debug(str + ">");
 }
 
 void ASurvivalCharacter::OnUse_Implementation()
@@ -253,13 +252,13 @@ void ASurvivalCharacter::OnUse_Implementation()
 		if (Result.Distance > UseDistance) { return; }
 		AActor* HitActor = Result.GetActor();
 		if (IsValid(HitActor)) {
-			//UUtilityFunctionLibrary::PrintDebug("Hit: " + HitActor->GetFName().ToString());
+			//Debug("Hit: " + HitActor->GetFName().ToString());
 			LastInteractionActorRef = Result.GetActor();
 			LastInteractionInfo.ControllerRef = GetController();
 			LastInteractionInfo.HitComponent = Result.GetComponent();
 			IInteractionInterface* Interface = Cast<IInteractionInterface>(HitActor);
 			if(Interface) {
-				//UUtilityFunctionLibrary::PrintDebug(" - Has Interface");
+				//Debug(" - Has Interface");
 				if (Interface->Execute_CanInteract(HitActor, LastInteractionInfo)) {
 					Interface->Execute_BeginInteraction(HitActor, LastInteractionInfo);
 				}

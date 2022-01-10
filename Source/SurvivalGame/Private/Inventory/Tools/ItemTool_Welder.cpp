@@ -2,9 +2,6 @@
 
 
 #include "Inventory/Tools/ItemTool_Welder.h"
-#include "Utility/UtilityFunctionLibrary.h"
-
-#define Debug(str) UUtilityFunctionLibrary::PrintDebug(str);
 
 AItemTool_Welder::AItemTool_Welder()
 	:Super()

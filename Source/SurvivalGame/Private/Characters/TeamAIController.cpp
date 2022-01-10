@@ -3,7 +3,6 @@
 
 #include "Characters/TeamAIController.h"
 #include "Perception/AIPerceptionComponent.h"
-#include "Utility/UtilityFunctionLibrary.h"
 
 ATeamAIController::ATeamAIController()
 {

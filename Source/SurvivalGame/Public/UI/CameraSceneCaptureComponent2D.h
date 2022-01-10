@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "CameraSceneCaptureComponent2D.generated.h"
 

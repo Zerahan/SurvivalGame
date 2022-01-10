@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "Components/TimelineComponent.h"
 #include "PatrolPath.generated.h"
 

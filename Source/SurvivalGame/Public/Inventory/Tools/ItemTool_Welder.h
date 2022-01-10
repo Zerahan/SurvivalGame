@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "Inventory/ItemTool_Basic.h"
 #include "ItemTool_Welder.generated.h"
 

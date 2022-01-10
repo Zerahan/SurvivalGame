@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "SurvivalGame.h"
 #include "Components/ActorComponent.h"
 #include "PatrolNodeComponent.generated.h"
 
