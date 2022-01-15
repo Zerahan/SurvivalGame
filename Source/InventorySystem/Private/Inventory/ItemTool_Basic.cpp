@@ -52,7 +52,8 @@ void AItemTool_Basic::SetOwnerInfo(APawn* NewOwnerRef)
 
 void AItemTool_Basic::OnPrimaryAction_Implementation()
 {
-	Debug("%s: Jazz hands!", *GetName());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%s: Jazz hands!"), *GetName()));
+	UE_LOG(LogTemp, Warning, TEXT("%s: Jazz hands!"), *GetName()); 
 	//Debug("Jazz hands!");
 }
 
@@ -74,7 +75,8 @@ void AItemTool_Basic::OnPrimaryAction_End()
 
 void AItemTool_Basic::OnSecondaryAction_Implementation()
 {
-	Debug("%s: Second jazz hands!", *GetName());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%s: Second jazz hands!"), *GetName()));
+	UE_LOG(LogTemp, Warning, TEXT("%s: Second jazz hands!"), *GetName());
 	//Debug("Second jazz hands!");
 }
 
@@ -97,7 +99,8 @@ void AItemTool_Basic::OnSecondaryAction_End()
 
 void AItemTool_Basic::OnTertiaryAction_Implementation()
 {
-	Debug("%s: Third jazz hands!", *GetName());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%s: Third jazz hands!"), *GetName()));
+	UE_LOG(LogTemp, Warning, TEXT("%s: Third jazz hands!"), *GetName());
 }
 
 void AItemTool_Basic::OnTertiaryAction_Start()

@@ -5,6 +5,7 @@
 #include "Modules/ModuleInterface.h"
 #include "Modules/ModuleManager.h"
 
+/*
 #ifndef Debug
 #define Debug(str, ...) \
 { \
@@ -12,6 +13,7 @@
 	UE_LOG(LogTemp, Warning, TEXT(str), __VA_ARGS__); \
 }
 #endif
+//*/
 
 /**
  * 

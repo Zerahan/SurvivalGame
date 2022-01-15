@@ -53,7 +53,8 @@ ASurvivalAICharacter::ASurvivalAICharacter()
 void ASurvivalAICharacter::PossessedBy(AController * NewTeamAIControllerRef)
 {
 	Super::PossessedBy(NewTeamAIControllerRef);
-	Debug("Test");
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Test")));
+	UE_LOG(LogTemp, Warning, TEXT("Test"));
 	if (AIPerceptionComponentRef && IsValid(AIPerceptionComponentRef)) {
 		AIPerceptionComponentRef->OnPerceptionUpdated.RemoveDynamic(this, &ASurvivalAICharacter::OnPerceptionUpdated);
 		AIPerceptionComponentRef->OnTargetPerceptionUpdated.RemoveDynamic(this, &ASurvivalAICharacter::OnTargetPerceptionUpdated);
@@ -95,7 +96,8 @@ void ASurvivalAICharacter::SetSightAngle(const float NewSightAngle)
 
 void ASurvivalAICharacter::OnTargetPerceptionInfoUpdated_Implementation(const FActorPerceptionUpdateInfo& UpdateInfo)
 {
-	Debug("Updated...");
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Updated...")));
+	UE_LOG(LogTemp, Warning, TEXT("Updated..."));
 	AActor* StimTarget = nullptr;
 	if (UpdateInfo.Target.IsValid()) {
 		StimTarget = UpdateInfo.Target.Get();
@@ -104,7 +106,8 @@ void ASurvivalAICharacter::OnTargetPerceptionInfoUpdated_Implementation(const FA
 	if (!IsValid(StimTarget)) { return; }
 
 	if (UpdateInfo.Stimulus.IsActive()) {
-		Debug("Detected: %s", *StimTarget->GetName());
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Detected: %s"), *StimTarget->GetName()));
+		UE_LOG(LogTemp, Warning, TEXT("Detected: %s"), *StimTarget->GetName());
 	}
 
 	if (UpdateInfo.Stimulus.IsExpired() || !UpdateInfo.Stimulus.IsValid()) {

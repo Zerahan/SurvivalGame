@@ -18,9 +18,9 @@ class INVENTORYSYSTEM_API UWidgetInventorySlot_Basic : public UUserWidget, publi
 {
 	GENERATED_BODY()
 
+public:
 	UWidgetInventorySlot_Basic(const FObjectInitializer& ObjectInitializer);
 
-public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI|Inventory", meta = (ExposeOnSpawn = "true"))
 	UInventoryManager* InventoryRef;
 

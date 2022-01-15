@@ -23,17 +23,20 @@ void UHotbarManager::BeginPlay()
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AItemTool_Basic* SpawnedObject = nullptr;
-	SpawnedObject = GetWorld()->SpawnActor<AItemTool_Basic>(AItemTool_Basic::StaticClass(), GetWorldSpawnLocation(), GetWorldSpawnRotation(), SpawnInfo);
-	if (IsValid(SpawnedObject)) {
-		SpawnedObject->Initialize(HandSlotData);
-		SpawnedObject->SetActorHiddenInGame(true);
-		if (IsValid(GetToolAttachmentComponent())) {
-			SpawnedObject->AttachToComponent(GetToolAttachmentComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GetToolAttachmentSocket());
+	FItemStaticData_Tool HandStatic = UInventorySlotData_Tool::LookupStaticData(HandSlotData);
+	if (FItemStaticData_Tool::IsValid(HandStatic)) {
+		SpawnedObject = GetWorld()->SpawnActor<AItemTool_Basic>(HandStatic.EquippedClass, GetWorldSpawnLocation(), GetWorldSpawnRotation(), SpawnInfo);
+		if (IsValid(SpawnedObject)) {
+			SpawnedObject->Initialize(HandSlotData);
+			SpawnedObject->SetActorHiddenInGame(true);
+			if (IsValid(GetToolAttachmentComponent())) {
+				SpawnedObject->AttachToComponent(GetToolAttachmentComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GetToolAttachmentSocket());
+			}
+			else {
+				SpawnedObject->AttachToActor(GetOwner(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+			}
+			HandEquipment = SpawnedObject;
 		}
-		else {
-			SpawnedObject->AttachToActor(GetOwner(), FAttachmentTransformRules::SnapToTargetIncludingScale);
-		}
-		HandEquipment = SpawnedObject;
 	}
 
 	for (int i = 0; i < GetInventorySize(); i++) {
@@ -180,7 +183,8 @@ void UHotbarManager::OnInventoryManagerSlotChanged_Implementation(const int32 Ta
 			SpawnedObject->SetActorHiddenInGame(true);
 			if (IsValid(GetToolAttachmentComponent())) {
 				SpawnedObject->AttachToComponent(GetToolAttachmentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, GetToolAttachmentSocket());
-				Debug("Attaching to Component");
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Attaching to Component")));
+				UE_LOG(LogTemp, Warning, TEXT("Attaching to Component"));
 			}
 			else {
 				SpawnedObject->AttachToActor(GetOwner(), FAttachmentTransformRules::SnapToTargetIncludingScale);

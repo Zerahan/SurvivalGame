@@ -23,7 +23,8 @@ void UInventoryHUDWidget::CloseMenu_Implementation()
 	IsOpen = false;
 	UpdateInput();
 	if (IsValid(InventoryRef)) {
-		Debug("UI: %s has been unlinked", *InventoryRef->GetDisplayName());
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("UI: %s has been unlinked"), *InventoryRef->GetDisplayName()));
+		UE_LOG(LogTemp, Warning, TEXT("UI: %s has been unlinked"), *InventoryRef->GetDisplayName());
 		InventoryRef->SetLinkedInventory(nullptr);
 	}
 }
