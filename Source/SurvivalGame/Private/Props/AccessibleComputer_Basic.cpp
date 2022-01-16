@@ -2,31 +2,43 @@
 
 
 #include "Props/AccessibleComputer_Basic.h"
-#include "Props/Computers/ComputerApp_Basic.h"
-#include "Props/Computers/ComputerApp_Commandline.h"
+#include "Props/Computers/FakeComputerApplication_Basic.h"
+#include "Props/Computers/FakeApp_Commandline.h"
 
 // Sets default values
 AAccessibleComputer_Basic::AAccessibleComputer_Basic()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//InstalledAppList.Add(CreateDefaultSubobject<UComputerApp_Commandline>(TEXT("OS")));
+	//InstalledAppList.Add(CreateDefaultSubobject<UFakeApp_Commandline>(TEXT("OS")));
 	IdleTimeBeforeAutoLogout = 30;
-	OperatingSystemClass = UComputerApp_Commandline::StaticClass();
+	OperatingSystemClass = UFakeApp_Commandline::StaticClass();
 	InstalledAppList.Empty();
+	UserNames.Empty();
+	UserPasswords.Empty();
+	UserGroupIDs.Empty();
 	//InstalledAppList.SetNum(1);
 }
 
 // Called when the game starts or when spawned
 void AAccessibleComputer_Basic::BeginPlay()
 {
-	UComputerApp_Commandline* App = NewObject<UComputerApp_Commandline>(this, OperatingSystemClass, FName("OperatingSystem"));
+	UFakeApp_Commandline* App = NewObject<UFakeApp_Commandline>(this, OperatingSystemClass, FName("OperatingSystem"));
+	FString ConsoleMessage;
+	InstalledAppList.Empty();
+	uint8 RequiredGroupID = FFakeUserLoginInfo::BuildUserGroupID(EFakeUserPrivilages::Basic, EFakeUserPrivilages::Standard);
+	InstallAppFromClass(OperatingSystemClass, RequiredGroupID, ConsoleMessage);
+	UserAdd("admin", "admin", FFakeUserLoginInfo::BuildUserGroupID(EFakeUserPrivilages::Expert, EFakeUserPrivilages::Admin), ConsoleMessage);
+	/*
 	if (IsValid(App)) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "OS Is Valid");
 		UE_LOG(LogTemp, Warning, TEXT("OS Is Valid"));
 	}
+	//*/
+	//InstalledAppList.SetNum(1);
 	//InstalledAppList[0] = App;
-	int32 Index = InstalledAppList.Add(App);
+	//int32 Index = InstalledAppList.Add(App);
+	/*
 	if (IsValid(InstalledAppList[0])) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "List Is Valid");
 		UE_LOG(LogTemp, Warning, TEXT("List Is Valid"));
@@ -35,6 +47,7 @@ void AAccessibleComputer_Basic::BeginPlay()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Invalid list: " + FString::FromInt(InstalledAppList.Num()));
 		UE_LOG(LogTemp, Warning, TEXT("Invalid list: %i"), InstalledAppList.Num());
 	}
+	//*/
 	Super::BeginPlay();
 }
 
@@ -67,7 +80,7 @@ void AAccessibleComputer_Basic::ResetIdleTimer()
 	}
 }
 
-inline UComputerApp_Basic* AAccessibleComputer_Basic::GetAppFromID(int32 AppID) const {
+inline UFakeComputerApplication_Basic* AAccessibleComputer_Basic::GetAppFromID(int32 AppID) const {
 	if (!InstalledAppList.IsValidIndex(AppID)){
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "AppID Is Valid");
 		UE_LOG(LogTemp, Warning, TEXT("AppID Is Valid"));
@@ -79,10 +92,11 @@ inline UComputerApp_Basic* AAccessibleComputer_Basic::GetAppFromID(int32 AppID) 
 void AAccessibleComputer_Basic::UserLogin_Implementation(FFakeUserLoginInfo LoginInfo, FString& ConsoleMessage)
 {
 	if (CurrentUser.IsValid()) {
-		ConsoleMessage += "ERROR: A user is already logged in. You must first log out to switch to a different user.\n";
+		ConsoleMessage += "\tERROR: A user is already logged in. You must first log out to switch to a different user.\n";
 		return;
 	}
 	if (IsUserInfoVerified(LoginInfo, ConsoleMessage)) {
+		ConsoleMessage += "\tLogged in as user [" + LoginInfo.Name + "].";
 		CurrentUser = LoginInfo;
 	}
 }
@@ -90,25 +104,48 @@ void AAccessibleComputer_Basic::UserLogin_Implementation(FFakeUserLoginInfo Logi
 void AAccessibleComputer_Basic::UserLogout_Implementation(FString& ConsoleMessage)
 {
 	if (!CurrentUser.IsValid()) {
-		ConsoleMessage += "ERROR: Unable to log out. You must log in to log out.\n";
+		ConsoleMessage += "\tERROR: Unable to log out. You must log in to log out.\n";
 		return;
 	}
+	ConsoleMessage += "\tUser [" + CurrentUser.Name + "] has been logged out.";
 	LogoutCurrentUser();
+}
+
+void AAccessibleComputer_Basic::UserAdd_Implementation(const FString& UserName, const FString& Password, const uint8 GroupID, FString& ConsoleMessage)
+{
+	int32 index = UserNames.Find(UserName);
+	if (index != INDEX_NONE) {
+		if (!Password.IsEmpty()) {
+			UserPasswords[index] = Password;
+		}
+		if (GroupID != 0) {
+			UserGroupIDs[index] = GroupID;
+		}
+	}
+	else {
+		UserNames.Add(UserName);
+		UserPasswords.Add(Password);
+		UserGroupIDs.Add(GroupID);
+	}
 }
 
 bool AAccessibleComputer_Basic::IsUserInfoVerified(FFakeUserLoginInfo& LoginInfo, FString& ConsoleMessage)
 {
 	int32 UserIndex = UserNames.Find(LoginInfo.Name);
 	if(UserIndex == INDEX_NONE){
-		ConsoleMessage += "ERROR: User [" + LoginInfo.Name + "] does not exist.";
+		ConsoleMessage += "\tERROR: User [" + LoginInfo.Name + "] does not exist.";
 		return false;
 	}
-	if(UserPasswords.IsValidIndex(UserIndex) || UserGroupIDs.IsValidIndex(UserIndex)){
-		ConsoleMessage += "ERROR: Malformed User Database.";
+	if(!UserNames.IsValidIndex(UserIndex) || !UserPasswords.IsValidIndex(UserIndex) || !UserGroupIDs.IsValidIndex(UserIndex)){
+		ConsoleMessage += "\tERROR: Malformed User Database.";
 		return false;
 	}
-	if(LoginInfo.Password != UserPasswords[UserIndex]) {
-		ConsoleMessage += "ERROR: User [" + LoginInfo.Name + "] does not exist.";
+	if (!LoginInfo.Name.Equals(UserNames[UserIndex])) {
+		ConsoleMessage += "\tERROR: User [" + LoginInfo.Name + "] does not exist.";
+		return false;
+	}
+	if (!LoginInfo.Password.Equals(UserPasswords[UserIndex])) {
+		ConsoleMessage += "\tERROR: User [" + LoginInfo.Name + "] does not exist.";
 		return false;
 	}
 	LoginInfo.GroupID = UserGroupIDs[UserIndex];
@@ -117,9 +154,10 @@ bool AAccessibleComputer_Basic::IsUserInfoVerified(FFakeUserLoginInfo& LoginInfo
 
 bool AAccessibleComputer_Basic::UserHasAccessPrivilage(uint8 TargetAppID, FString& ConsoleMessage) const
 {
+	//ConsoleMessage += "\t" + FFakeUserLoginInfo::GroupIDToString(InstalledAppList[TargetAppID]->GetRequiredGroupID()) + " vs " + FFakeUserLoginInfo::GroupIDToString(CurrentUser.GroupID);
 	if (!IsValidApp(TargetAppID, ConsoleMessage)) return false;
-	if (CurrentUser.IsUserInGroup(InstalledAppList[TargetAppID]->GetRequiredGroupID())) {
-		ConsoleMessage += "ALERT: USER_CURRENT ATTEMPTED TO ACCESS RESTRICTED FILES. SECURITY HAS BEEN NOTIFIED.\n";
+	if (!CurrentUser.IsUserInGroup(InstalledAppList[TargetAppID]->GetRequiredGroupID())) {
+		//ConsoleMessage += "\tALERT: USER_CURRENT ATTEMPTED TO ACCESS RESTRICTED FILES. SECURITY HAS BEEN NOTIFIED.\n";
 		return false;
 	}
 	return true;
@@ -128,7 +166,7 @@ bool AAccessibleComputer_Basic::UserHasAccessPrivilage(uint8 TargetAppID, FStrin
 bool AAccessibleComputer_Basic::IsValidApp(uint8 TargetAppID, FString& ConsoleMessage) const
 {
 	if (!InstalledAppList.IsValidIndex(TargetAppID)) {
-		ConsoleMessage += "ERROR: UNKNOWN APP_ID (" + FString::FromInt(TargetAppID) + ")\n";
+		ConsoleMessage += "\tERROR: UNKNOWN APP_ID (" + FString::FromInt(TargetAppID) + ")\n";
 		return false;
 	}
 	return true;
@@ -137,14 +175,47 @@ bool AAccessibleComputer_Basic::IsValidApp(uint8 TargetAppID, FString& ConsoleMe
 void AAccessibleComputer_Basic::OpenApp_Implementation(const int32 TargetAppID, FString& ConsoleMessage)
 {
 	if(!IsValidApp(TargetAppID, ConsoleMessage)) return;
-	if (!UserHasAccessPrivilage(TargetAppID, ConsoleMessage)) return;
+	if (!UserHasAccessPrivilage(TargetAppID, ConsoleMessage)){
+		ConsoleMessage += "\tALERT: USER_CURRENT ATTEMPTED TO ACCESS RESTRICTED FILES. SECURITY HAS BEEN NOTIFIED.\n";
+		return;
+	}
+	if (TargetAppID == 0) {
+		ConsoleMessage += "\tERROR: Cannot open AppID (" + FString::FromInt(TargetAppID) + ")\n";
+		return;
+	}
+	ConsoleMessage += "\tOpening AppID (" + FString::FromInt(TargetAppID) + "): " + InstalledAppList[TargetAppID]->GetDisplayName().ToString();
 	CurrentOpenApp = TargetAppID;
 	OnOpenAppDispatcher.Broadcast(CurrentOpenApp);
+}
+
+TArray<int32> AAccessibleComputer_Basic::GetAppListIDs(FString& ConsoleMessage) const
+{
+	TArray<int32> CulledAppList;
+	CulledAppList.Empty();
+	for (int32 i = 0; i < InstalledAppList.Num(); i++) {
+		FString CMD;
+		if (UserHasAccessPrivilage(i, CMD)) {
+			CulledAppList.Add(i);
+		}
+	}
+	return CulledAppList;
 }
 
 void AAccessibleComputer_Basic::CloseApp_Implementation(FString& ConsoleMessage)
 {
 	OnCloseAppDispatcher.Broadcast(CurrentOpenApp);
+}
+
+void AAccessibleComputer_Basic::InstallAppFromClass_Implementation(const TSubclassOf<UFakeComputerApplication_Basic> AppClass, const uint8 RequiredGroupID, FString& ConsoleMessage)
+{
+	UFakeApp_Commandline* App = NewObject<UFakeApp_Commandline>(this, AppClass, AppClass.Get()->GetFName());
+	App->AssignGroupID(RequiredGroupID);
+	InstalledAppList.Add(App);
+}
+
+void AAccessibleComputer_Basic::InstallApp_Implementation(UFakeComputerApplication_Basic* AppRef, FString& ConsoleMessage)
+{
+	InstalledAppList.Add(AppRef);
 }
 
 void AAccessibleComputer_Basic::LogoutCurrentUser()

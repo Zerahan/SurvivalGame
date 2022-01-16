@@ -44,6 +44,9 @@ public:
 	}
 	
 	bool IsUserInGroup(uint8 UserGroup) const {
+		//if (UserGroup == (uint8)EFakeUserPrivilages::None) {
+		//	return true;
+		//}
 		return EnumHasAllFlags<EFakeUserPrivilages>(EFakeUserPrivilages(GroupID), EFakeUserPrivilages(UserGroup));
 	}
 	

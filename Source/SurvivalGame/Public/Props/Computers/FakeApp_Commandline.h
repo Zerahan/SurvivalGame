@@ -3,31 +3,35 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Props/Computers/ComputerApp_Basic.h"
-#include "ComputerApp_Commandline.generated.h"
+#include "Props/Computers/FakeComputerApplication_Basic.h"
+#include "FakeApp_Commandline.generated.h"
 
 DECLARE_DELEGATE_OneParam(FFakeCommandLine, TArray<FString>);
 
-DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FOnConsoleUpdatedDispatcher, UComputerApp_Commandline, OnConsoleUpdatedDispatcher);
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FOnConsoleUpdatedDispatcher, UFakeApp_Commandline, OnConsoleUpdatedDispatcher);
 
 USTRUCT(BlueprintType)
 struct SURVIVALGAME_API FCommandLineEntry {
 	GENERATED_BODY()
 public:
-	FCommandLineEntry(FString _AliasName = "", FString _Description = "", UObject* _FunctionParentObjectRef = nullptr, FName _FunctionName = NAME_None, uint8 _RequiredGroupID = 0)
+	FCommandLineEntry(FString _AliasName = "", FString _ShortDescription = "", FString _FullDescription = "", UObject* _FunctionParentObjectRef = nullptr, FName _FunctionName = NAME_None, uint8 _RequiredGroupID = 0)
 	{
-		AliasName		= _AliasName;
-		Description		= _Description;
+		AliasName				= _AliasName;
+		ShortDescription		= _ShortDescription;
+		FullDescription			= _FullDescription;
 		FunctionParentObjectRef = _FunctionParentObjectRef;
-		FunctionName	= _FunctionName;
-		RequiredGroupID	= _RequiredGroupID;
+		FunctionName			= _FunctionName;
+		RequiredGroupID			= _RequiredGroupID;
 	}
 
 	UPROPERTY(BlueprintReadOnly)
 	FString AliasName;
 	
 	UPROPERTY(BlueprintReadOnly)
-	FString Description;
+	FString ShortDescription;
+
+	UPROPERTY(BlueprintReadOnly)
+	FString FullDescription;
 
 	UPROPERTY(BlueprintReadOnly)
 	UObject* FunctionParentObjectRef;
@@ -78,7 +82,7 @@ public:
  * 
  */
 UCLASS(Blueprintable, ClassGroup = (Custom))
-class SURVIVALGAME_API UComputerApp_Commandline : public UComputerApp_Basic
+class SURVIVALGAME_API UFakeApp_Commandline : public UFakeComputerApplication_Basic
 {
 	GENERATED_BODY()
 
@@ -104,7 +108,7 @@ class SURVIVALGAME_API UComputerApp_Commandline : public UComputerApp_Basic
 	UFakeCommandHistory* CommandHistory;
 	
 public:
-	UComputerApp_Commandline();
+	UFakeApp_Commandline();
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer|CMD")
 	void ProcessCommand(FString Command);
@@ -124,7 +128,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Command_User(TArray<FString> Args);
 
-	void AddCommand(const FString cmd, UObject* ObjectRef, const FName func, const FString desc, uint8 groupid = 0);
+	UFUNCTION(BlueprintCallable)
+	void Command_App(TArray<FString> Args);
+
+	void AddCommand(const FString cmd, UObject* ObjectRef, const FName func, const FString desc, const FString fulldesc, uint8 groupid = 0);
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Default|Inventory")
 	FOnConsoleUpdatedDispatcher OnConsoleUpdatedDispatcher;

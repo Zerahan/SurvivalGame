@@ -5,16 +5,16 @@
 #include "SurvivalGame.h"
 #include "UObject/NoExportTypes.h"
 #include "Props/Computers/ComputerTypes.h"
-#include "ComputerApp_Basic.generated.h"
+#include "FakeComputerApplication_Basic.generated.h"
 
-class UComputerAppWidget_Basic;
+class UFakeComputerApplicationWidget_Basic;
 class UUserWidget;
 
 /**
  * 
  */
 UCLASS(Blueprintable, ClassGroup = (Custom))
-class SURVIVALGAME_API UComputerApp_Basic : public UObject
+class SURVIVALGAME_API UFakeComputerApplication_Basic : public UObject
 {
 	GENERATED_BODY()
 	
@@ -23,13 +23,13 @@ protected:
 	FName AppName;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta=(BlueprintProtected))
-	TSubclassOf<UComputerAppWidget_Basic> WidgetClass;
+	TSubclassOf<UFakeComputerApplicationWidget_Basic> WidgetClass;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta=(BlueprintProtected))
 	uint8 RequiredGroupID;
 
 public:
-	UComputerApp_Basic();
+	UFakeComputerApplication_Basic();
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
 	uint8 GetRequiredGroupID() const;
@@ -38,14 +38,17 @@ public:
 	FName GetDisplayName() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
-	void AssignGroupID(const EFakeUserPrivilages Level, const EFakeUserPrivilages Group);
+	void AssignGroupIDFromPrivilages(const EFakeUserPrivilages Level, const EFakeUserPrivilages Group);
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
-	TSubclassOf<UComputerAppWidget_Basic> GetWidgetClass() const;
+	void AssignGroupID(const uint8 GroupID);
+
+	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
+	TSubclassOf<UFakeComputerApplicationWidget_Basic> GetWidgetClass() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer|UI")
 	UUserWidget* GenerateWidget(APlayerController* Controller);
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
-	UComputerApp_Basic* CopyApp();
+	UFakeComputerApplication_Basic* CopyApp();
 };
