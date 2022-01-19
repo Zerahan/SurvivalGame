@@ -17,7 +17,6 @@ AAccessibleComputer_Basic::AAccessibleComputer_Basic()
 	UserNames.Empty();
 	UserPasswords.Empty();
 	UserGroupIDs.Empty();
-	//InstalledAppList.SetNum(1);
 }
 
 // Called when the game starts or when spawned
@@ -28,26 +27,11 @@ void AAccessibleComputer_Basic::BeginPlay()
 	InstalledAppList.Empty();
 	uint8 RequiredGroupID = FFakeUserLoginInfo::BuildUserGroupID(EFakeUserPrivilages::Basic, EFakeUserPrivilages::Standard);
 	InstallAppFromClass(OperatingSystemClass, RequiredGroupID, ConsoleMessage);
+	for (int32 i = 0; i < InstalledAppBuilders.Num(); i++) {
+		RequiredGroupID = FFakeUserLoginInfo::BuildUserGroupID(InstalledAppBuilders[i].UserLevel, InstalledAppBuilders[i].UserGroup);
+		InstallAppFromClass(InstalledAppBuilders[i].AppClass, RequiredGroupID, ConsoleMessage);
+	}
 	UserAdd("admin", "admin", FFakeUserLoginInfo::BuildUserGroupID(EFakeUserPrivilages::Expert, EFakeUserPrivilages::Admin), ConsoleMessage);
-	/*
-	if (IsValid(App)) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "OS Is Valid");
-		UE_LOG(LogTemp, Warning, TEXT("OS Is Valid"));
-	}
-	//*/
-	//InstalledAppList.SetNum(1);
-	//InstalledAppList[0] = App;
-	//int32 Index = InstalledAppList.Add(App);
-	/*
-	if (IsValid(InstalledAppList[0])) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "List Is Valid");
-		UE_LOG(LogTemp, Warning, TEXT("List Is Valid"));
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Invalid list: " + FString::FromInt(InstalledAppList.Num()));
-		UE_LOG(LogTemp, Warning, TEXT("Invalid list: %i"), InstalledAppList.Num());
-	}
-	//*/
 	Super::BeginPlay();
 }
 
@@ -208,9 +192,12 @@ void AAccessibleComputer_Basic::CloseApp_Implementation(FString& ConsoleMessage)
 
 void AAccessibleComputer_Basic::InstallAppFromClass_Implementation(const TSubclassOf<UFakeComputerApplication_Basic> AppClass, const uint8 RequiredGroupID, FString& ConsoleMessage)
 {
-	UFakeApp_Commandline* App = NewObject<UFakeApp_Commandline>(this, AppClass, AppClass.Get()->GetFName());
-	App->AssignGroupID(RequiredGroupID);
-	InstalledAppList.Add(App);
+	if (AppClass) {
+		UFakeComputerApplication_Basic* App = NewObject<UFakeComputerApplication_Basic>(this, AppClass, AppClass.Get()->GetFName());
+		App->AssignGroupID(RequiredGroupID);
+		App->Initialize();
+		InstalledAppList.Add(App);
+	}
 }
 
 void AAccessibleComputer_Basic::InstallApp_Implementation(UFakeComputerApplication_Basic* AppRef, FString& ConsoleMessage)

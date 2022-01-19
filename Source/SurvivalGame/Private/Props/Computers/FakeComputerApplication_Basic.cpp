@@ -3,7 +3,8 @@
 
 #include "Props/Computers/FakeComputerApplication_Basic.h"
 #include "UI/FakeComputerApplicationWidget_Basic.h"
-#include "..\..\..\Public\Props\Computers\FakeComputerApplication_Basic.h"
+#include "Props/Computers/FakeComputerApplication_Basic.h"
+#include "Props/AccessibleComputer_Basic.h"
 
 UFakeComputerApplication_Basic::UFakeComputerApplication_Basic()
 {
@@ -11,9 +12,15 @@ UFakeComputerApplication_Basic::UFakeComputerApplication_Basic()
 	RequiredGroupID = 0;
 }
 
+void UFakeComputerApplication_Basic::Initialize_Implementation()
+{
+}
+
 inline uint8 UFakeComputerApplication_Basic::GetRequiredGroupID() const { return RequiredGroupID; }
 
 inline FName UFakeComputerApplication_Basic::GetDisplayName() const { return AppName; }
+
+inline AAccessibleComputer_Basic* UFakeComputerApplication_Basic::GetOwningComputer() const { return Cast<AAccessibleComputer_Basic>(GetOuter()); }
 
 void UFakeComputerApplication_Basic::AssignGroupIDFromPrivilages(const EFakeUserPrivilages Level, const EFakeUserPrivilages Group)
 {

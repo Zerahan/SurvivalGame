@@ -4,15 +4,41 @@
 
 #include "SurvivalGame.h"
 #include "GameFramework/Actor.h"
-//#include "Props/Computers/FakeComputerApplication_Basic.h"
+#include "Props/Computers/FakeComputerApplication_Basic.h"
 #include "Props/Computers/ComputerTypes.h"
 #include "Interfaces/InteractionInterface.h"
 #include "AccessibleComputer_Basic.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(FOpenAppDispatcher, AAccessibleComputer_Basic, OnOpenAppDispatcher, int32, TargetAppID);
-DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(FCloseAppDispatcher, AAccessibleComputer_Basic, OnCloseAppDispatcher, int32, TargetAppID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOpenAppDispatcher, int32, TargetAppID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCloseAppDispatcher, int32, TargetAppID);
 
-class UFakeComputerApplication_Basic;
+//class UFakeComputerApplication_Basic;
+
+USTRUCT(BlueprintType)
+struct SURVIVALGAME_API FComputerAppBuilder {
+	GENERATED_BODY()
+
+public:
+	FComputerAppBuilder(const TSubclassOf<UFakeComputerApplication_Basic> _AppClass = UFakeComputerApplication_Basic::StaticClass(), const EFakeUserPrivilages _UserLevel = EFakeUserPrivilages::None, const EFakeUserPrivilages _UserGroup = EFakeUserPrivilages::None)
+	{
+		AppClass = _AppClass;
+		UserLevel = _UserLevel;
+		UserGroup = _UserGroup;
+	};
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Computer")
+	TSubclassOf<UFakeComputerApplication_Basic> AppClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Computer")
+	EFakeUserPrivilages UserLevel;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Computer")
+	EFakeUserPrivilages UserGroup;
+	
+	bool IsValid() const {
+		return AppClass.Get() != UFakeComputerApplication_Basic::StaticClass();
+	}
+};
 
 UCLASS(Blueprintable, ClassGroup = (Custom))
 class SURVIVALGAME_API AAccessibleComputer_Basic : public AActor, public IInteractionInterface
@@ -49,9 +75,15 @@ class SURVIVALGAME_API AAccessibleComputer_Basic : public AActor, public IIntera
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UFakeComputerApplication_Basic> OperatingSystemClass;
 	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	TArray<AActor*> NetworkedActors;
+	
 public:	
 	// Sets default values for this actor's properties
 	AAccessibleComputer_Basic();
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TArray<FComputerAppBuilder> InstalledAppBuilders;
 
 protected:
 	// Called when the game starts or when spawned
@@ -69,19 +101,19 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
 	void ResetIdleTimer();
-
+	
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
 	UFakeComputerApplication_Basic* GetAppFromID(int32 AppID) const;
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Default|Computer")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Computer")
 	void UserLogin(FFakeUserLoginInfo LoginInfo, FString& ConsoleMessage);
 	virtual void UserLogin_Implementation(FFakeUserLoginInfo LoginInfo, FString& ConsoleMessage);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Default|Computer")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Computer")
 	void UserLogout(FString& ConsoleMessage);
 	virtual void UserLogout_Implementation(FString& ConsoleMessage);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Default|Computer")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Computer")
 	void UserAdd(const FString& UserName, const FString& Password, const uint8 GroupID, FString& ConsoleMessage);
 	virtual void UserAdd_Implementation(const FString& UserName, const FString& Password, const uint8 GroupID, FString& ConsoleMessage);
 
@@ -94,22 +126,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
 	bool IsValidApp(uint8 TargetAppID, FString& ConsoleMessage) const;
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Default|Computer")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Computer")
 	void OpenApp(const int32 TargetAppID, FString& ConsoleMessage);
 	virtual void OpenApp_Implementation(const int32 TargetAppID, FString& ConsoleMessage);
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
 	TArray<int32> GetAppListIDs(FString& ConsoleMessage) const;
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Default|Computer")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Computer")
 	void CloseApp(FString& ConsoleMessage);
 	virtual void CloseApp_Implementation(FString& ConsoleMessage);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Default|Computer")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Computer")
 	void InstallAppFromClass(TSubclassOf<UFakeComputerApplication_Basic> AppClass, const uint8 RequiredGroupID, FString& ConsoleMessage);
 	virtual void InstallAppFromClass_Implementation(TSubclassOf<UFakeComputerApplication_Basic> AppClass, const uint8 RequiredGroupID, FString& ConsoleMessage);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Default|Computer")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Computer")
 	void InstallApp(UFakeComputerApplication_Basic* AppRef, FString& ConsoleMessage);
 	virtual void InstallApp_Implementation(UFakeComputerApplication_Basic* AppRef, FString& ConsoleMessage);
 

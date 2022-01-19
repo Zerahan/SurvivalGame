@@ -33,4 +33,6 @@ public:
 	void SetAppRef(UFakeComputerApplication_Basic* NewComputerAppRef);
 	virtual void SetAppRef_Implementation(UFakeComputerApplication_Basic* NewComputerAppRef);
 	
+	UFUNCTION(BlueprintCallable, Category = "Default|ComputerApp")
+	static int32 GenerateHashFromString(const FString& InString);
 };

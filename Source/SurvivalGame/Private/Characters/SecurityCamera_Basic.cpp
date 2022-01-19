@@ -22,14 +22,18 @@ ASecurityCamera_Basic::ASecurityCamera_Basic()
 	CameraMesh->SetRelativeLocation(FVector(40, 0, 0));
 	CameraMesh->bOwnerNoSee = true;
 
-#ifdef CLIENT
+//#ifdef CLIENT
 	//if (GEngine->GetNetMode(GetWorld()) == NM_Client) {
 	CaptureComponent = CreateDefaultSubobject<UCameraSceneCaptureComponent2D>(TEXT("ClientsideCaptureComponent"));
 	CaptureComponent->SetupAttachment(CameraLookOverride);
-	FPostProcessSettings PostProcessSettings	= FPostProcessSettings();
+	PostProcessSettings	= FPostProcessSettings();
+	PostProcessSettings.bOverride_AutoExposureMinBrightness = true;
+	PostProcessSettings.bOverride_AutoExposureMaxBrightness = true;
+	PostProcessSettings.AutoExposureMinBrightness = 1.f;
+	PostProcessSettings.AutoExposureMaxBrightness = 1.f;
 	CaptureComponent->PostProcessSettings		= PostProcessSettings;
 	CaptureComponent->PrimitiveRenderMode		= ESceneCapturePrimitiveRenderMode::PRM_RenderScenePrimitives;
-	CaptureComponent->CaptureSource				= ESceneCaptureSource::SCS_FinalColorLDR;
+	CaptureComponent->CaptureSource				= ESceneCaptureSource::SCS_FinalColorHDR;
 	CaptureComponent->bCaptureEveryFrame		= true;
 	CaptureComponent->bCaptureOnMovement		= false;
 	CaptureComponent->FOVAngle					= 120.f;
@@ -37,39 +41,40 @@ ASecurityCamera_Basic::ASecurityCamera_Basic()
 	CaptureComponent->bAutoActivate = false;
 	CaptureComponent->SetActive(false);
 	//}
-#endif
+//#endif
 	SetViewOwnerOverride(this);
 }
 
 void ASecurityCamera_Basic::Destroyed()
 {
-#ifdef CLIENT
+//#ifdef CLIENT
 	CaptureComponent = nullptr;
-#endif
+//#endif
 	Super::Destroyed();
 }
 
 void ASecurityCamera_Basic::ActivateSceneCapture_Implementation(UTextureRenderTarget2D* NewRenderTarget)
 {
-#ifdef CLIENT
+//#ifdef CLIENT
 	CaptureComponent->TextureTarget = NewRenderTarget;
+	CaptureComponent->PostProcessSettings = PostProcessSettings;
 	CaptureComponent->SetActive(true, true);
-#endif
+//#endif
 }
 
 void ASecurityCamera_Basic::DeactivateSceneCapture_Implementation()
 {
-#ifdef CLIENT
+//#ifdef CLIENT
 	CaptureComponent->SetActive(false);
 	CaptureComponent->TextureTarget = nullptr;
-#endif
+//#endif
 }
 
 void ASecurityCamera_Basic::SetViewOwnerOverride_Implementation(AActor* NewOwner)
 {
 	if (ViewOwnerOverride == NewOwner) return;
 	ViewOwnerOverride = NewOwner;
-#ifdef CLIENT
+//#ifdef CLIENT
 	CaptureComponent->SetViewOwner(NewOwner);
-#endif
+//#endif
 }

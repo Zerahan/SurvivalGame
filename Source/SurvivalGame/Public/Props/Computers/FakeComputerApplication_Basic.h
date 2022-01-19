@@ -8,6 +8,7 @@
 #include "FakeComputerApplication_Basic.generated.h"
 
 class UFakeComputerApplicationWidget_Basic;
+class AAccessibleComputer_Basic;
 class UUserWidget;
 
 /**
@@ -31,11 +32,18 @@ protected:
 public:
 	UFakeComputerApplication_Basic();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Default|Computer")
+	void Initialize();
+	virtual void Initialize_Implementation();
+
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
 	uint8 GetRequiredGroupID() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
 	FName GetDisplayName() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
+	AAccessibleComputer_Basic* GetOwningComputer() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Default|Computer")
 	void AssignGroupIDFromPrivilages(const EFakeUserPrivilages Level, const EFakeUserPrivilages Group);

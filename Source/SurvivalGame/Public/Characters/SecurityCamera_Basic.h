@@ -25,11 +25,14 @@ class SURVIVALGAME_API ASecurityCamera_Basic : public ASurvivalAIPawn
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Default|Mesh", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* CameraMesh;
 
-#ifdef CLIENT
+//#ifdef CLIENT
 protected:
-	//UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Default|Camera", meta = (BlueprintProtected))
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Default|Camera", meta = (BlueprintProtected))
 	UCameraSceneCaptureComponent2D* CaptureComponent;
-#endif
+//#endif
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Default|Camera", meta = (BlueprintProtected))
+	FPostProcessSettings PostProcessSettings;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Default|Camera", meta = (BlueprintProtected))
