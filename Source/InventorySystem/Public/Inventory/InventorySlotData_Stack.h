@@ -14,24 +14,26 @@ struct INVENTORYSYSTEM_API FItemStaticData_Stack : public FTableRowBase {
 
 	FItemStaticData_Stack();
 
+	// All of the standard item static data.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FItemStaticData_Basic BasicData;
 
+	// Containers aren't destroyed when they are empty. Aka, this slot remains when it's amount is 0.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsContainer;
 
+	// The arbitrary maximum amount of this item type that can exist within a single slot.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxStackSize;
 
-	/**
-	* Amount in the slot is devided by this when displayed on UI.  This allows for stackable containers. For example, a pile of gun magazines could be 12 magazines with 20 bullets per magazine, where bullets are used from the last magazine on the stack.
-	*/
+	//Amount in the slot is devided by this when displayed on UI.  This allows for stackable containers. For example, a pile of gun magazines could be 12 magazines with 20 bullets per magazine, where bullets are used from the last magazine on the stack.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 StackCompressSize;
 
 	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
 	//FString Subtype;
 
+	// What to do when the item is consumed directly by the user. Used for health potions and the like.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UDataAsset> AbilityClass;
 
@@ -44,6 +46,7 @@ struct FItemSlotBuilder_Stack : public FItemSlotBuilder_Basic {
 
 	FItemSlotBuilder_Stack(UDataTable* DataTable = nullptr, const FName RowName = NAME_None, const int32 Amount = -1);
 
+	// The amount that is currently within this slot.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory")
 	int32 Amount;
 
@@ -56,13 +59,14 @@ struct FItemSlotBuilder_Stack : public FItemSlotBuilder_Basic {
 //*******//
 
 /**
- * 
+ * Item data that can be stacked. Ex: 20 wood, 50 stone, 40 bullets, and the like.
  */
 UCLASS(BlueprintType, Blueprintable, ClassGroup = (Custom))
 class INVENTORYSYSTEM_API UInventorySlotData_Stack : public UInventorySlotData_Basic
 {
 	GENERATED_BODY()
 
+	// The amount of this item that is in the slot
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default|Inventory", meta = (AllowPrivateAccess = "true"))
 	int32 Amount;
 
