@@ -37,7 +37,7 @@ private:
 	int32 InventorySize;
 
 	/**
-	* Array of slots for the inventory. Can include empty, unused slots.
+	* Array of slots for the inventory. Should remain a fixed size, so will include empty, unused slots.
 	*/
 	UPROPERTY(VisibleAnywhere, Category = "Default|Inventory", meta = (EditFixedSize))
 	TArray<UInventorySlotData_Basic*> InventorySlots;
@@ -61,6 +61,9 @@ private:
 	UPROPERTY()
 	UInventoryManager* LinkedInventoryRef;
 
+	/**
+	* The player controller that owns this inventory. Used for allowing or disallowing other controllers to access this inventory.
+	*/
 	UPROPERTY(VisibleAnywhere, Category = "Default|Inventory", meta = (AllowPrivateAccess = "true"))
 	APlayerController* OwningPlayerRef;
 
@@ -95,41 +98,58 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	/*
+	* Only changes the size of the inventory before this component's BeginPlay function runs.
+	* @param NewSize	The number of slots this inventory should have.
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	void SetInventorySize(const int32 NewSize);
 
+	/*
+	* Set the text that is displayed on UI elements when referring to this inventory.
+	* @param NewName	The name to display for this inventory
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	void SetDisplayName(const FString NewName);
 
+	/*
+	* Gets the name of the inventory for UI or other display purposes
+	* @return	Returns the display name for this inventory.
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	FString GetDisplayName() const;
 
 	/**
 	* Sets the seperate inventory that this inventory can make transfers with. Example: link the player's inventory and a chests' inventory to allow transfers. Should only allow the server to use this.
+	* @param NewLinkedInventoryRef	Can be left blank to unlink the inventory pointer.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	void SetLinkedInventory(UInventoryManager* NewLinkedInventoryRef = nullptr);
 
 	/**
 	* Gets the inventory linked to this one.
+	*@return The inventory currently linked to this one. Can return nullptr.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	UInventoryManager* GetLinkedInventory() const;
 
 	/**
 	* Returns owning actor's world location, otherwise returns SpawnPointComponentRef's world location
+	* @return The world location where dropped or created items are placed.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	FVector GetWorldSpawnLocation() const;
 
 	/**
 	* Returns owning actor's world rotation, otherwise returns SpawnPointComponentRef's world rotation
+	* @return The world rotation for dropped or created items.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	FRotator GetWorldSpawnRotation() const;
 
 	/**
 	* Gets the size of the inventory.
+	* @return The target size of the inventory. Can be different from the actual number of slots.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	int32 GetInventorySize() const;
@@ -317,20 +337,37 @@ public:
 
 	/**
 	* Helper function for spawning items into the world from an inventory
+	* @param	The class of the spawned item, must always a subclass of ADroppedItem_Basic.
+	* @return	The actor that is spawned that represents the dropped item.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	ADroppedItem_Basic* CreateDroppedItem(const TSubclassOf<ADroppedItem_Basic> SpawnedClass);
 
+	/*
+	* @return Returns the player controller that owns this inventory.
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	APlayerController* GetOwningPlayer();
 	
+	/*
+	* A helper function that is called whenever the inventory finishes processing data for a slot in the inventory. Can be called multiple times per operation.
+	* @param TargetSlot	The slot that was modified.
+	*/
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Default|Inventory")
 	void OnInventoryManagerSlotChanged(const int32 TargetSlot);
 	virtual void OnInventoryManagerSlotChanged_Implementation(const int32 TargetSlot);
 
+	/*
+	* Notifies UI elements that this Inventory has finished processing data for a particular slot within the inventory.
+	* @param TargetSlot The slot that was modified.
+	*/
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Default|Inventory")
 	FOnInventoryManagerSlotChangedDispatcher OnInventoryManagerSlotChangedDispatcher;
 
+
+	/*
+	* Notifies UI elements that this Inventory is starting to access or is finishing accessing an external inventory.
+	*/
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Default|Inventory")
 	FOnLinkedInventoryChangedDispatcher OnLinkedInventoryChangedDispatcher;
 };

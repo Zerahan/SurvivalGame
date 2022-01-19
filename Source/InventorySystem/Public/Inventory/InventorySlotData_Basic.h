@@ -12,36 +12,52 @@ class ADroppedItem_Basic;
 
 // Serialize with FObjectWriter/FObjectReader
 
+
+// All of the data that is identical between different instances of this item.
 USTRUCT(BlueprintType)
 struct INVENTORYSYSTEM_API FItemStaticData_Basic : public FTableRowBase {
 	GENERATED_BODY()
 
 	FItemStaticData_Basic();
 
+	// The name of the item as shown to users. Replace with FText for localization at a later point.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString DisplayName;
 
+	// The name of the item as shown to users. Replace with FText for localization at a later point.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Description;
 
+	// The overall itemtype for ambiguous data processing.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EItemType ItemType;
 
+	// The subtype to refine ambiguous data processing.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	uint8 ItemSubtype;
 
+	// The icon for this item as shown to users.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UTexture2D> Icon;
 
+	// The slot that is created when this item is added to an inventory.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UInventorySlotData_Basic> InstancedDataClass;
 
+	// The actor that is spawned when this item is dropped into the world.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ADroppedItem_Basic> SpawnedClass;
 
+	/*
+	* Mostly just makes sure the data put in is not default data.
+	* @param StaticData		The data to check.
+	* @return				True if StaticData contains usable data.
+	*/
 	static bool IsValid(const FItemStaticData_Basic& StaticData);
 };
 
+
+//A struct that contains all of the data that this slot type can hold, used to construct the slot.
 USTRUCT(BlueprintType)
 struct FItemSlotBuilder_Basic {
 	GENERATED_BODY()
@@ -54,9 +70,9 @@ public:
 
 	bool IsValid() const;
 };
-/**
- * 
- */
+
+
+// The actual item that is processed during active gameplay.
 UCLASS(BlueprintType, Blueprintable, Abstract, ClassGroup = (Custom))
 class INVENTORYSYSTEM_API UInventorySlotData_Basic : public UObject
 {
@@ -67,11 +83,23 @@ private:
 	FDataTableRowHandle StaticDataHandle;
 
 public:
+	/*
+	* Sets the data for this slot from a SlotBuilder struct
+	* @param NewSlotData The data for this slot.
+	*/
 	void SetFromData(const FItemSlotBuilder_Basic& NewSlotData);
 
+	/*
+	* Gets the Data table row handle to get static data for this slot.
+	* @return	Datatable and row name
+	*/
 	UFUNCTION(BlueprintCallable)
 	FDataTableRowHandle GetStaticDataHandle() const;
 
+	/*
+	* Sets where to find this item's static data.
+	* @param NewStaticDataHandle	The handle used to lookup static data.
+	*/
 	UFUNCTION(BlueprintCallable)
 	void SetStaticDataHandle(const FDataTableRowHandle& NewStaticDataHandle);
 
@@ -118,14 +146,19 @@ public:
 	virtual bool ShouldDestroyObject() const;
 
 	/**
-	* Attempt to find the static data for this handle.
-	* @param StaticDataHandle	The handle to use for looking up the static data
-	* @param ReturnedStaticData	The actual data that was found.
-	* @return					True if the handle pointed to valid static data.
+	* Attempt to find the static data for this slot.
+	* @param SlotToFind			The slot pointer used to access StaticDataHandle.
+	* @return					The data that was found. Can return invalid or blank data.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	static FItemStaticData_Basic LookupStaticData(UInventorySlotData_Basic* SlotToFind);
 
+	/*
+	* Constructs a new UObject from the supplied data. Allows for the FItemData_Simple struct to be used to generate new slots in an inventory.
+	* @param Handle		The DataTableRowHandle that is used for constructing the new UObject
+	* @param NewOuter	The object that owns the new UObject for garbage collection and other functions.
+	* @return			The newly-created UObject.
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Default|Inventory")
 	static UInventorySlotData_Basic* CreateNewSlotFromHandle(const FDataTableRowHandle Handle, UObject* NewOuter);
 };
